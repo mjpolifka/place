@@ -25,3 +25,10 @@ Have a place for every window, and be able to put them in their place
 - `place all` puts all windows which have a saved position within the "desktop" location into their place
 - `place list locations` list all saved locations
 - `place list positions` list all saved window positions for the current location
+
+
+## Installation
+
+- Run `go build`
+- Add the exe to a folder on your PATH
+    - Recommend `C:\Users\[username]\AppData\Local\Microsoft\WindowsApps`
