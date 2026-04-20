@@ -7,14 +7,13 @@ import (
 	"syscall"
 )
 
-func moveWindow() {
+func moveWindow(windowName string) error {
 	user32Dll := syscall.NewLazyDLL("user32.dll")
 	moveWindowProc := user32Dll.NewProc("MoveWindow")
 
-	hwnd, err := getHWND()
+	hwnd, err := getHWND(windowName)
 	if err != nil {
-		fmt.Println("Unable to find Notepad window:", err)
-		return
+		return err
 	}
 
 	x := 100
@@ -32,9 +31,9 @@ func moveWindow() {
 		uintptr(repaint),
 	)
 	if ret == 0 {
-		fmt.Println("MoveWindow failed:", err)
-		return
+		return err
 	}
 
 	fmt.Println("Window resized.")
+	return nil
 }

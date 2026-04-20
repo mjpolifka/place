@@ -10,7 +10,7 @@ import (
 	"unsafe"
 )
 
-func getHWND() (uintptr, error) {
+func getHWND(targetProcessName string) (uintptr, error) {
 	user32DLL := syscall.NewLazyDLL("user32.dll")
 	kernel32DLL := syscall.NewLazyDLL("kernel32.dll")
 
@@ -23,8 +23,6 @@ func getHWND() (uintptr, error) {
 	closeHandleProc := kernel32DLL.NewProc("CloseHandle")
 
 	const processQueryLimitedInformation = 0x1000
-
-	targetProcessName := "notepad.exe"
 	var foundHWND uintptr
 	var callbackErr error
 
