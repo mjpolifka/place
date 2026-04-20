@@ -33,10 +33,10 @@
         - [x] enforce non-negative
         - [x] enforce max value so it doesn't wrap around
         - [ ] enforce maxima based on display size
-    - [ ] instance
-        - [ ] send through `stringconv.Atoi`, will error on non-int
-        - [ ] enforce non-negative
-        - [ ] enforce max value of `10`
+    - [x] instance
+        - [x] send through `stringconv.Atoi`, will error on non-int
+        - [x] enforce non-negative
+        - [x] enforce max value of `10`
 - [x] unminimizes the window first
     - [x] must do this before moving/resizing, nothing happens if it's minimized
     - [x] similar issue when maximized, as soon as you move it the old size returns

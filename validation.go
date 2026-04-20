@@ -62,3 +62,15 @@ func validateWindowSize(value int) error {
 	}
 	return nil
 }
+
+func validateInstance(value int) error {
+	maxInstanceValue := 10
+	err := validateIntOverflow(value)
+	if err != nil {
+		return err
+	}
+	if value < 0 || value > maxInstanceValue {
+		return fmt.Errorf("Instance must be in range [0, %d]: %d", maxInstanceValue, value)
+	}
+	return nil
+}
