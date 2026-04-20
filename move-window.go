@@ -15,6 +15,7 @@ func moveWindow(windowName string, instance int, x int, y int, width int, height
 	moveWindowProc := user32Dll.NewProc("MoveWindow")
 	setForegroundWindowProc := user32Dll.NewProc("SetForegroundWindow")
 	bringWindowToTopProc := user32Dll.NewProc("BringWindowToTop")
+	showWindowProc := user32Dll.NewProc("ShowWindow")
 
 	hwnd, err := getHWND(windowName)
 	if err != nil {
@@ -24,7 +25,12 @@ func moveWindow(windowName string, instance int, x int, y int, width int, height
 	fmt.Println("Not using instance:", instance)
 	repaint := 1 // TRUE
 
-	ret, _, err := moveWindowProc.Call(
+	ret, _, err := showWindowProc.Call(hwnd, 9)
+	if ret == 0 {
+		return err
+	}
+
+	ret, _, err = moveWindowProc.Call(
 		hwnd,
 		uintptr(x),
 		uintptr(y),
@@ -39,7 +45,7 @@ func moveWindow(windowName string, instance int, x int, y int, width int, height
 	bringWindowToTopProc.Call(hwnd)
 	setForegroundWindowProc.Call(hwnd)
 
-	fmt.Println("Window moved, resized, and brought to the foreground.")
+	fmt.Println("Window restored, moved, resized, and brought to the foreground.")
 	return nil
 }
 

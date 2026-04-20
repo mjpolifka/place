@@ -15,5 +15,6 @@
 - [ ] Enable use of "instance" arg
     - Can getHWND return a list of matches along with their HWND's?
     - I'm hoping this list is already sorted in a sane way, so I can use the index as the "instance" number, which translates to "smallest number is the window opened the longest ago" (same order as when you hover over the taskbar and it shows previews)
-- [ ] How to unminimize it if it's minimized?
-    - [ ] Must do this before moving/resizing, nothing happens if it's minimized
+- [x] How to unminimize it if it's minimized?
+    - [x] Must do this before moving/resizing, nothing happens if it's minimized
+    - [x] similar issue when maximized, as soon as you move it the old size returns
