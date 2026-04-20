@@ -1,3 +1,5 @@
+//go:build windows
+
 package main
 
 import (
@@ -9,8 +11,11 @@ func moveWindow() {
 	user32Dll := syscall.NewLazyDLL("user32.dll")
 	moveWindowProc := user32Dll.NewProc("MoveWindow")
 
-	// Replace this with the HWND you want to resize.
-	var hwnd uintptr = 0x00123456 // what's an HWND and how do I get one?
+	hwnd, err := getHWND()
+	if err != nil {
+		fmt.Println("Unable to find Notepad window:", err)
+		return
+	}
 
 	x := 100
 	y := 100
