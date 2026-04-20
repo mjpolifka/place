@@ -25,13 +25,13 @@ func moveWindow(windowName string, instance int, x int, y int, width int, height
 	fmt.Println("Not using instance:", instance)
 	repaint := 1 // TRUE
 
-	ret, _, err := showWindowProc.Call(hwnd, 9)
+	ret, _, err := showWindowProc.Call(hwnd[0], 9)
 	if ret == 0 {
 		return err
 	}
 
 	ret, _, err = moveWindowProc.Call(
-		hwnd,
+		hwnd[0],
 		uintptr(x),
 		uintptr(y),
 		uintptr(width),
@@ -42,14 +42,14 @@ func moveWindow(windowName string, instance int, x int, y int, width int, height
 		return err
 	}
 
-	bringWindowToTopProc.Call(hwnd)
-	setForegroundWindowProc.Call(hwnd)
+	bringWindowToTopProc.Call(hwnd[0])
+	setForegroundWindowProc.Call(hwnd[0])
 
 	fmt.Println("Window restored, moved, resized, and brought to the foreground.")
 	return nil
 }
 
-func getHWND(targetProcessName string) (uintptr, error) {
+func getHWND(targetProcessName string) ([]uintptr, error) {
 	user32DLL := syscall.NewLazyDLL("user32.dll")
 	kernel32DLL := syscall.NewLazyDLL("kernel32.dll")
 
@@ -62,7 +62,7 @@ func getHWND(targetProcessName string) (uintptr, error) {
 	closeHandleProc := kernel32DLL.NewProc("CloseHandle")
 
 	const processQueryLimitedInformation = 0x1000
-	var foundHWND uintptr
+	var foundHWNDs []uintptr
 	var callbackErr error
 
 	callback := syscall.NewCallback(func(hwnd uintptr, lparam uintptr) uintptr {
@@ -102,26 +102,25 @@ func getHWND(targetProcessName string) (uintptr, error) {
 		exePath := syscall.UTF16ToString(buf[:size])
 		exeName := strings.ToLower(filepath.Base(exePath))
 		if exeName == targetProcessName {
-			foundHWND = hwnd
-			return 0 // stop enumeration
+			foundHWNDs = append(foundHWNDs, hwnd)
 		}
 
 		return 1 // continue
 	})
 
 	ret, _, err := enumWindowsProc.Call(callback, 0)
-	if ret == 0 && foundHWND == 0 {
+	if ret == 0 && len(foundHWNDs) == 0 {
 		if err != syscall.Errno(0) {
 			callbackErr = err
 		}
 	}
 
-	if foundHWND == 0 {
+	if len(foundHWNDs) == 0 {
 		if callbackErr != nil {
-			return 0, fmt.Errorf("failed to find HWND for %s: %w", targetProcessName, callbackErr)
+			return nil, fmt.Errorf("failed to find HWND for %s: %w", targetProcessName, callbackErr)
 		}
-		return 0, fmt.Errorf("could not find an open window for %s", targetProcessName)
+		return nil, fmt.Errorf("could not find an open window for %s", targetProcessName)
 	}
 
-	return foundHWND, nil
+	return foundHWNDs, nil
 }
