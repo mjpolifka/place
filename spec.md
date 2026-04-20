@@ -15,32 +15,33 @@
 ## Command: Locate
 
 - [ ] `place locate process-name instance x y width height` should move the given instance of the process-name.exe window to location x, y and resize it to width x height
-- [ ] gets a list of windows of `process-name.exe`
+    - [x] gets a list of windows of `process-name.exe`
     - [x] as a start, get the first instance
-    - Can getHWND return a list of matches along with their HWND's?
-    - I'm hoping this list is already sorted in a sane way, so I can use the index as the "instance" number, which translates to "smallest number is the window opened the longest ago" (same order as when you hover over the taskbar and it shows previews)
-- [x] moves the correct window to `x, y`
-- [x] resizes the correct window to `width x height`
-- [ ] validates args don't do anything dangerous
-    - [x] process name
-        - [x] strips out whitespace (this seems unnecessary)
-        - [x] enforces not blank (also seems unnecessary)
-        - [x] enforces no "path characters"
-        - [x] enforces no "control characters"
-        - [x] strips out endings of `.exe`
-    - [ ] x, y, height, width
-        - [x] send through `stringconv.Atoi`, will error on non-int
-        - [x] enforce non-negative
-        - [x] enforce max value so it doesn't wrap around
-        - [ ] enforce maxima based on display size
-    - [x] instance
-        - [x] send through `stringconv.Atoi`, will error on non-int
-        - [x] enforce non-negative
-        - [x] enforce max value of `10`
-- [x] unminimizes the window first
-    - [x] must do this before moving/resizing, nothing happens if it's minimized
-    - [x] similar issue when maximized, as soon as you move it the old size returns
-    - restoring if not maximized or minimized doesn't seem to have any ill effects, but not 100% sure
+    - [ ] sorts list by create_date; is this possible?
+        - trying to achieve the same order that windows uses when you hover a taskbar item
+    - [ ] uses `instance` to choose which of the matching windows to move
+    - [x] moves the correct window to `x, y`
+    - [x] resizes the correct window to `width x height`
+    - [ ] validates args don't do anything dangerous
+        - [x] process name
+            - [x] strips out whitespace (this seems unnecessary)
+            - [x] enforces not blank (also seems unnecessary)
+            - [x] enforces no "path characters"
+            - [x] enforces no "control characters"
+            - [x] strips out endings of `.exe`
+        - [ ] x, y, height, width
+            - [x] send through `stringconv.Atoi`, will error on non-int
+            - [x] enforce non-negative
+            - [x] enforce max value so it doesn't wrap around
+            - [ ] enforce maxima based on display size
+        - [x] instance
+            - [x] send through `stringconv.Atoi`, will error on non-int
+            - [x] enforce non-negative
+            - [x] enforce max value of `10`
+    - [x] unminimizes the window first
+        - [x] must do this before moving/resizing, nothing happens if it's minimized
+        - [x] similar issue when maximized, as soon as you move it the old size returns
+        - restoring if not maximized or minimized doesn't seem to have any ill effects, but not 100% sure
 
 ## Command: Create
 

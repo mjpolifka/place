@@ -17,21 +17,23 @@ func moveWindow(windowName string, instance int, x int, y int, width int, height
 	bringWindowToTopProc := user32Dll.NewProc("BringWindowToTop")
 	showWindowProc := user32Dll.NewProc("ShowWindow")
 
-	hwnd, err := getHWND(windowName)
+	hwndList, err := getHWNDs(windowName)
 	if err != nil {
 		return err
 	}
 
+	fmt.Println("HWND List:", hwndList)
+
 	fmt.Println("Not using instance:", instance)
 	repaint := 1 // TRUE
 
-	ret, _, err := showWindowProc.Call(hwnd[0], 9)
+	ret, _, err := showWindowProc.Call(hwndList[0], 9)
 	if ret == 0 {
 		return err
 	}
 
 	ret, _, err = moveWindowProc.Call(
-		hwnd[0],
+		hwndList[0],
 		uintptr(x),
 		uintptr(y),
 		uintptr(width),
@@ -42,14 +44,14 @@ func moveWindow(windowName string, instance int, x int, y int, width int, height
 		return err
 	}
 
-	bringWindowToTopProc.Call(hwnd[0])
-	setForegroundWindowProc.Call(hwnd[0])
+	bringWindowToTopProc.Call(hwndList[0])
+	setForegroundWindowProc.Call(hwndList[0])
 
 	fmt.Println("Window restored, moved, resized, and brought to the foreground.")
 	return nil
 }
 
-func getHWND(targetProcessName string) ([]uintptr, error) {
+func getHWNDs(targetProcessName string) ([]uintptr, error) {
 	user32DLL := syscall.NewLazyDLL("user32.dll")
 	kernel32DLL := syscall.NewLazyDLL("kernel32.dll")
 
