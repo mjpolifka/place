@@ -2,7 +2,8 @@
 
 **Put your windows in their place**
 
-Partly a Go experiment, partly trying to solve my docking-station woes
+Partly a Go experiment, partly trying to solve my docking-station woes  
+Letting Codex do the DLL calls, learning that is currently out-of-scope  
 
 
 ## The Idea
