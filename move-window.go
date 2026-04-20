@@ -10,6 +10,8 @@ import (
 func moveWindow(windowName string) error {
 	user32Dll := syscall.NewLazyDLL("user32.dll")
 	moveWindowProc := user32Dll.NewProc("MoveWindow")
+	setForegroundWindowProc := user32Dll.NewProc("SetForegroundWindow")
+	bringWindowToTopProc := user32Dll.NewProc("BringWindowToTop")
 
 	hwnd, err := getHWND(windowName)
 	if err != nil {
@@ -34,6 +36,9 @@ func moveWindow(windowName string) error {
 		return err
 	}
 
-	fmt.Println("Window resized.")
+	bringWindowToTopProc.Call(hwnd)
+	setForegroundWindowProc.Call(hwnd)
+
+	fmt.Println("Window moved, resized, and brought to the foreground.")
 	return nil
 }
