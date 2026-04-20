@@ -5,7 +5,6 @@ package main
 import (
 	"fmt"
 	"path/filepath"
-	"sort"
 	"strings"
 	"syscall"
 	"unsafe"
@@ -125,11 +124,12 @@ func getHWNDs(targetProcessName string) ([]uintptr, error) {
 		return nil, fmt.Errorf("could not find an open window for %s", targetProcessName)
 	}
 
-	// EnumWindows returns top-level windows in Z-order (most recently active first).
-	// Sort by HWND value so the list is stable and oldest-created windows usually come first.
-	sort.Slice(foundHWNDs, func(i, j int) bool {
-		return foundHWNDs[i] < foundHWNDs[j]
-	})
+	// EnumWindows yields top-level windows in Z-order (topmost first), which tracks
+	// recent activation. Taskbar hover order is oldest window first for standard app
+	// windows, so reverse the enumeration order to match that behavior.
+	for i, j := 0, len(foundHWNDs)-1; i < j; i, j = i+1, j-1 {
+		foundHWNDs[i], foundHWNDs[j] = foundHWNDs[j], foundHWNDs[i]
+	}
 
 	return foundHWNDs, nil
 }
