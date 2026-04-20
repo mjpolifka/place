@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"path/filepath"
+	"sort"
 	"strings"
 	"syscall"
 	"unsafe"
@@ -123,6 +124,12 @@ func getHWNDs(targetProcessName string) ([]uintptr, error) {
 		}
 		return nil, fmt.Errorf("could not find an open window for %s", targetProcessName)
 	}
+
+	// EnumWindows returns top-level windows in Z-order (most recently active first).
+	// Sort by HWND value so the list is stable and oldest-created windows usually come first.
+	sort.Slice(foundHWNDs, func(i, j int) bool {
+		return foundHWNDs[i] < foundHWNDs[j]
+	})
 
 	return foundHWNDs, nil
 }
