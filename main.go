@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
+	"unicode"
 )
 
 func main() {
@@ -75,8 +77,13 @@ func locate(args []string) {
 	fmt.Println("Window height:", height)
 
 	fmt.Println("Call resize")
+	normalizedProcessName, err := normalizeProcessName(args[2])
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	err = moveWindow(
-		args[2]+".exe",
+		normalizedProcessName,
 		instance,
 		x,
 		y,
@@ -86,4 +93,26 @@ func locate(args []string) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func normalizeProcessName(raw string) (string, error) {
+	trimmed := strings.TrimSpace(raw)
+	if trimmed == "" {
+		return "", fmt.Errorf("window name cannot be empty")
+	}
+
+	for _, ch := range trimmed {
+		if ch == '/' || ch == '\\' {
+			return "", fmt.Errorf("window name cannot contain path separators")
+		}
+		if unicode.IsControl(ch) {
+			return "", fmt.Errorf("window name cannot contain control characters")
+		}
+	}
+
+	normalized := strings.ToLower(trimmed)
+	normalized = strings.TrimSuffix(normalized, ".exe")
+	normalized = normalized + ".exe"
+
+	return normalized, nil
 }
