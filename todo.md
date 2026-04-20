@@ -9,8 +9,9 @@
         - [x] strip out endings of `.exe`
         - [x] also strip "path characters" and "control characters"
     - [ ] x, y, height, width should be fine b/c `strconv`?
-        - [ ] set a max int size so it doesn't wrap around
-        - [ ] ensure they are non-negative
+        - [x] set a max int size so it doesn't wrap around
+        - [x] ensure they are non-negative
+        - [ ] set maxima based on display size; how do we get display size?
 - [ ] Enable use of "instance" arg
     - Can getHWND return a list of matches along with their HWND's?
     - I'm hoping this list is already sorted in a sane way, so I can use the index as the "instance" number, which translates to "smallest number is the window opened the longest ago" (same order as when you hover over the taskbar and it shows previews)
