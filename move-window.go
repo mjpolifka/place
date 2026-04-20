@@ -7,7 +7,7 @@ import (
 	"syscall"
 )
 
-func moveWindow(windowName string) error {
+func moveWindow(windowName string, instance int, x int, y int, width int, height int) error {
 	user32Dll := syscall.NewLazyDLL("user32.dll")
 	moveWindowProc := user32Dll.NewProc("MoveWindow")
 	setForegroundWindowProc := user32Dll.NewProc("SetForegroundWindow")
@@ -18,10 +18,7 @@ func moveWindow(windowName string) error {
 		return err
 	}
 
-	x := 100
-	y := 100
-	width := 800
-	height := 600
+	fmt.Println("Not using instance:", instance)
 	repaint := 1 // TRUE
 
 	ret, _, err := moveWindowProc.Call(
