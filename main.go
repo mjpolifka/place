@@ -1,5 +1,5 @@
 package main
 
 func main() {
-	user32()
+	moveWindow()
 }
