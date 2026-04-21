@@ -14,9 +14,14 @@ func main() {
 	// fmt.Println("All args:", args)
 
 	if len(args) > 1 {
-		if args[1] == "locate" {
+		switch args[1] {
+		case "locate":
 			locate(args)
-		} else {
+		case "track":
+			if err := runTracker(); err != nil {
+				fmt.Println(err)
+			}
+		default:
 			fmt.Println("Invalid argument, show help")
 		}
 	} else {

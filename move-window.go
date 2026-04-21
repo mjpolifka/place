@@ -4,11 +4,7 @@ package main
 
 import (
 	"fmt"
-	"path/filepath"
-	"sort"
-	"strings"
 	"syscall"
-	"unsafe"
 )
 
 func moveWindow(windowName string, instance int, x int, y int, width int, height int) error {
@@ -53,89 +49,21 @@ func moveWindow(windowName string, instance int, x int, y int, width int, height
 }
 
 func getHWNDs(targetProcessName string) ([]uintptr, error) {
-	user32DLL := syscall.NewLazyDLL("user32.dll")
-	kernel32DLL := syscall.NewLazyDLL("kernel32.dll")
+	windows, err := enumerateOpenWindows()
+	if err != nil {
+		return nil, err
+	}
 
-	enumWindowsProc := user32DLL.NewProc("EnumWindows")
-	getWindowThreadProcessIDProc := user32DLL.NewProc("GetWindowThreadProcessId")
-	isWindowVisibleProc := user32DLL.NewProc("IsWindowVisible")
-
-	openProcessProc := kernel32DLL.NewProc("OpenProcess")
-	queryFullProcessImageNameWProc := kernel32DLL.NewProc("QueryFullProcessImageNameW")
-	closeHandleProc := kernel32DLL.NewProc("CloseHandle")
-
-	const processQueryLimitedInformation = 0x1000
 	var foundHWNDs []uintptr
-	var callbackErr error
-
-	callback := syscall.NewCallback(func(hwnd uintptr, lparam uintptr) uintptr {
-		visible, _, _ := isWindowVisibleProc.Call(hwnd)
-		if visible == 0 {
-			return 1 // continue
-		}
-
-		var pid uint32
-		getWindowThreadProcessIDProc.Call(hwnd, uintptr(unsafe.Pointer(&pid)))
-		if pid == 0 {
-			return 1 // continue
-		}
-
-		processHandle, _, _ := openProcessProc.Call(
-			processQueryLimitedInformation,
-			0,
-			uintptr(pid),
-		)
-		if processHandle == 0 {
-			return 1 // continue
-		}
-		defer closeHandleProc.Call(processHandle)
-
-		buf := make([]uint16, syscall.MAX_PATH)
-		size := uint32(len(buf))
-		ret, _, _ := queryFullProcessImageNameWProc.Call(
-			processHandle,
-			0,
-			uintptr(unsafe.Pointer(&buf[0])),
-			uintptr(unsafe.Pointer(&size)),
-		)
-		if ret == 0 {
-			return 1 // continue
-		}
-
-		exePath := syscall.UTF16ToString(buf[:size])
-		exeName := strings.ToLower(filepath.Base(exePath))
-		if exeName == targetProcessName {
-			foundHWNDs = append(foundHWNDs, hwnd)
-		}
-
-		return 1 // continue
-	})
-
-	ret, _, err := enumWindowsProc.Call(callback, 0)
-	if ret == 0 && len(foundHWNDs) == 0 {
-		if err != syscall.Errno(0) {
-			callbackErr = err
+	for _, w := range windows {
+		if w.ProcessName == targetProcessName {
+			foundHWNDs = append(foundHWNDs, w.HWND)
 		}
 	}
 
 	if len(foundHWNDs) == 0 {
-		if callbackErr != nil {
-			return nil, fmt.Errorf("failed to find HWND for %s: %w", targetProcessName, callbackErr)
-		}
 		return nil, fmt.Errorf("could not find an open window for %s", targetProcessName)
 	}
 
-	// EnumWindows yields top-level windows in Z-order (recent activity), not creation
-	// order. Use the HWND creation key (low 32 bits) to sort by creation sequence.
-	// HWND values can include non-ordering bits in the upper word on 64-bit builds.
-	sort.Slice(foundHWNDs, func(i, j int) bool {
-		left := uint32(foundHWNDs[i] & 0xffffffff)
-		right := uint32(foundHWNDs[j] & 0xffffffff)
-		if left == right {
-			return foundHWNDs[i] < foundHWNDs[j]
-		}
-		return left < right
-	})
-
-	return foundHWNDs, nil
+	return sortHWNDsByTrackedOrder(foundHWNDs), nil
 }
