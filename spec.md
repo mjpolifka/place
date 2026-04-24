@@ -1,25 +1,20 @@
 # Spec
 
-## General
+## First, a basic way to move windows
+
+### General
 
 - [x] enforce correct number of arguments for given command
-- [ ] powershell install script runs `go build` then moves `place.exe` to $HOME\AppData\Local\Microsoft\WindowsApps so it's on $PATH
-    - [ ] checks that go is installed before running `go build`
-    - [ ] verifies `place.exe` exists before trying to move it
 - [ ] locations are saved to their own `[name].json` file
     - [ ] positions are the elements of the json
 - [ ] selected location is saved to `config.json` file
-- [ ] files live in `./.Place`
+- [ ] files live in `os.Getwd()/.Place`
 
+### Command: [process-name]
 
-## Command: Locate
-
-- [ ] `place locate process-name instance x y width height` should move the given instance of the process-name.exe window to location x, y and resize it to width x height
+- [ ] `place process-name instance x y width height` should move the given instance of the process-name.exe window to location x, y and resize it to width x height
+    - [x] gets the first instance of a window of `process-name.exe`
     - [x] gets a list of windows of `process-name.exe`
-    - [x] as a start, get the first instance
-    - [ ] sorts list by create_date; is this possible?
-        - trying to achieve the same order that windows uses when you hover a taskbar item
-    - [ ] uses `instance` to choose which of the matching windows to move
     - [x] moves the correct window to `x, y`
     - [x] resizes the correct window to `width x height`
     - [ ] validates args don't do anything dangerous
@@ -31,7 +26,6 @@
             - [x] strips out endings of `.exe`
         - [ ] x, y, height, width
             - [x] send through `stringconv.Atoi`, will error on non-int
-            - [x] enforce non-negative
             - [x] enforce max value so it doesn't wrap around
             - [ ] enforce maxima based on display size
         - [x] instance
@@ -43,7 +37,9 @@
         - [x] similar issue when maximized, as soon as you move it the old size returns
         - restoring if not maximized or minimized doesn't seem to have any ill effects, but not 100% sure
 
-## Command: Create
+## Then later, a robust way to keep things where they belong
+
+### Command: Create
 
 - [ ] `place create name` should create a new json file `name.json`
     - [ ] validates `name` input isn't dangerous
@@ -55,12 +51,12 @@
         - [ ] checks existence of `config.json` first
         - [ ] creates `config.json` if it doesn't exist
 
-### Command: Copy
+#### Command: Copy
 
-- Not MVP
+- See "And finally"
 
 
-## Command: Select
+### Command: Select
 
 - [ ] `place select name` should change the currently selected location to `name`
     - [ ] validates `name` input isn't dangerous
@@ -73,7 +69,7 @@
     - [ ] saves the selection to `config.json`
 
 
-## Command: Save
+### Command: Save
 
 - [ ] `place save process-name instance` should save the position of the given instance of the process-name.exe window to the current location
     - [ ] gets or already has the current location
@@ -92,7 +88,7 @@
     - [ ] saves the values to the correct json file
 
 
-## Command: Process-Name
+### Command: [process-name]
 
 - [ ] `place process-name instance` puts the given instance of the process-name.exe window into its saved position in the current location
     - [ ] if `instance` is omitted, `1` is used
@@ -113,7 +109,7 @@
     
 
 
-## Command: All
+### Command: All
 
 - [ ] `place all` puts all windows into their correct positions in the current location
     - [ ] gets or already has the current location
@@ -123,12 +119,12 @@
     - [ ] moves and resizes each item to match those values
 
 
-## Command: List
+### Command: List
 
 - [ ] `place list` errors
     - [ ] reminds user to include either `locations` or `positions` sub-command
 
-### Command: Locations
+#### Command: Locations
 
 - [ ] `place list locations` lists all saved locations
     - [ ] lists all files in `./.Place` that end with `.json`
@@ -136,7 +132,7 @@
     - [ ] removes `config` from the list
     - [ ] displays list to user
 
-### Command: Positions
+#### Command: Positions
 
 - [ ] `place list positions` lists all saved positions in the current location
     - [ ] gets or already has the current location
@@ -144,3 +140,24 @@
     - [ ] gets list of positions from json file
     - [ ] includes name, instance, x, y, width, height for each item
     - [ ] displays list to user
+
+
+## And finally, a way to place multiple instances of one executable's windows
+
+### Command: [process-name]
+
+- [ ] `place instance process-name instance x y width height` should move the given instance of the process-name.exe window to location x, y and resize it to width x height
+    - [ ] requires a tracking service to register new windows creation order; will spec later
+- [ ] `place process-name instance` puts the given instance of the process-name.exe window into its saved position in the current location
+
+
+### Command: Save
+
+- [ ] `place save process-name instance` should save the position of the given instance of the process-name.exe window to the current location
+
+
+### Command: Create
+
+#### Command: Copy
+
+- TODO

@@ -40,12 +40,12 @@ func validateIntOverflow(i int) error {
 }
 
 func validateWindowCoord(value int) error {
-	maxWindowCoord := 10000
+	maxWindowCoord := 10000 // Max 2147483647
 	err := validateIntOverflow(value)
 	if err != nil {
 		return err
 	}
-	if value < 0 || value > maxWindowCoord {
+	if value < -maxWindowCoord || value > maxWindowCoord {
 		return fmt.Errorf("Window coord must be in range [0, %d]: %d", maxWindowCoord, value)
 	}
 	return nil
@@ -59,18 +59,6 @@ func validateWindowSize(value int) error {
 	}
 	if value < 0 || value > maxWindowSize {
 		return fmt.Errorf("Window size must be in range [0, %d]: %d", maxWindowSize, value)
-	}
-	return nil
-}
-
-func validateInstance(value int) error {
-	maxInstanceValue := 10
-	err := validateIntOverflow(value)
-	if err != nil {
-		return err
-	}
-	if value < 0 || value > maxInstanceValue {
-		return fmt.Errorf("Instance must be in range [0, %d]: %d", maxInstanceValue, value)
 	}
 	return nil
 }

@@ -10,7 +10,7 @@ import (
 	"unsafe"
 )
 
-func moveWindow(windowName string, instance int, x int, y int, width int, height int) error {
+func moveWindow(windowName string, x int, y int, width int, height int) error {
 	user32Dll := syscall.NewLazyDLL("user32.dll")
 	moveWindowProc := user32Dll.NewProc("MoveWindow")
 	setForegroundWindowProc := user32Dll.NewProc("SetForegroundWindow")
@@ -23,8 +23,6 @@ func moveWindow(windowName string, instance int, x int, y int, width int, height
 	}
 
 	fmt.Println("HWND List:", hwndList)
-
-	fmt.Println("Not using instance:", instance)
 	repaint := 1 // TRUE
 
 	ret, _, err := showWindowProc.Call(hwndList[0], 9)

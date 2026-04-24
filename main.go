@@ -14,10 +14,9 @@ func main() {
 	// fmt.Println("All args:", args)
 
 	if len(args) > 1 {
-		if args[1] == "locate" {
+		switch args[1] {
+		default:
 			locate(args)
-		} else {
-			fmt.Println("Invalid argument, show help")
 		}
 	} else {
 		fmt.Println("Not enough arguments, show help")
@@ -25,37 +24,25 @@ func main() {
 
 }
 
+// TODO rename
 func locate(args []string) {
 	fmt.Println("Locate a window.")
 
-	if len(args) < 8 {
+	if len(args) < 6 {
 		fmt.Println("Not enough args for 'locate', show help")
 		return
 	}
 
 	// Process Name
-	normalizedProcessName, err := normalizeProcessName(args[2])
+	normalizedProcessName, err := normalizeProcessName(args[1])
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	fmt.Println("Process name:", normalizedProcessName)
 
-	// Instance
-	instance, err := strconv.Atoi(args[3])
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	err = validateIntOverflow(instance)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Window instance:", instance)
-
 	// X
-	x, err := strconv.Atoi(args[4])
+	x, err := strconv.Atoi(args[2])
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -68,7 +55,7 @@ func locate(args []string) {
 	fmt.Println("Window x:", x)
 
 	// Y
-	y, err := strconv.Atoi(args[5])
+	y, err := strconv.Atoi(args[3])
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -81,7 +68,7 @@ func locate(args []string) {
 	fmt.Println("Window y:", y)
 
 	// Width
-	width, err := strconv.Atoi(args[6])
+	width, err := strconv.Atoi(args[4])
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -94,7 +81,7 @@ func locate(args []string) {
 	fmt.Println("Window width:", width)
 
 	// Height
-	height, err := strconv.Atoi(args[7])
+	height, err := strconv.Atoi(args[5])
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -110,7 +97,6 @@ func locate(args []string) {
 	fmt.Println("Call resize")
 	err = moveWindow(
 		normalizedProcessName,
-		instance,
 		x,
 		y,
 		width,

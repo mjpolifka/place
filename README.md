@@ -13,7 +13,7 @@ Have a place for every window, and be able to put them in their place
 
 ### First, a basic way to move windows
 
-- `place locate firefox 200 10 1200 1300` moves firefox to position x=200, y=10, width=1200, height=1300
+- `place firefox 200 10 1200 1300` moves firefox to position x=200, y=10, width=1200, height=1300
 
 
 ### Then later, a robust way to keep things where they belong
@@ -29,7 +29,7 @@ Have a place for every window, and be able to put them in their place
 ### And finally, a way to place multiple instances of one executable's windows
 
 any command which takes an executable name can optionally take an instance number as a next parameter
-- `place locate firefox 2 200 10 1200 1300` locates the second instance of firefox
+- `place firefox 2 200 10 1200 1300` locates the second instance of firefox
 - `place save firefox 2` saves the current position of the second instance of firefox
 - `place firefox 2` places the second instance of firefox
 
