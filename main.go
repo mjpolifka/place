@@ -15,6 +15,13 @@ func main() {
 
 	if len(args) > 1 {
 		switch args[1] {
+		case "test":
+			displays, err := getDisplayDimensions()
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Println(displays)
 		default:
 			move(args)
 		}
