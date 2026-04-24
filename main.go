@@ -15,6 +15,13 @@ func main() {
 
 	if len(args) > 1 {
 		switch args[1] {
+		case "test":
+			displays, err := getDisplayDimensions()
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Println(displays)
 		default:
 			move(args)
 		}
@@ -92,17 +99,18 @@ func move(args []string) {
 	}
 	fmt.Println("Window height:", height)
 
-	displays, err := getDisplayDimensions()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	// displays, err := getDisplayDimensions()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+	// fmt.Println(displays)
 
-	err = validatePointWithinDisplays(x, y, displays)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	// err = validatePointWithinDisplays(x, y, displays)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
 
 	// Call Resize
 	fmt.Println("Call resize")

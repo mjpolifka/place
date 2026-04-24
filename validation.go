@@ -142,12 +142,12 @@ func getDisplayDimensions() ([]displayDimensions, error) {
 	return displays, nil
 }
 
-func validatePointWithinDisplays(x int, y int, displays []displayDimensions) error {
-	for _, display := range displays {
-		if x >= display.Left && x < display.Right && y >= display.Top && y < display.Bottom {
-			return nil
-		}
-	}
+// func validatePointWithinDisplays(x int, y int, displays []displayDimensions) error {
+// 	for _, display := range displays {
+// 		if x >= display.Left && x < display.Right && y >= display.Top && y < display.Bottom {
+// 			return nil
+// 		}
+// 	}
 
-	return fmt.Errorf("point (%d, %d) is outside all detected displays", x, y)
-}
+// 	return fmt.Errorf("point (%d, %d) is outside all detected displays", x, y)
+// }
