@@ -74,9 +74,34 @@ func TestNormalizeProcessName(t *testing.T) {
 	})
 }
 
-// func TestValidateIntOverflow(t *testing.T) {
-// 	t.Error("Haven't implemented test")
-// }
+func TestValidateIntOverflow(t *testing.T) {
+	t.Run("good-int", func(t *testing.T) {
+		err := validateIntOverflow(1024)
+		if err != nil {
+			t.Error("want: nil | got:", err)
+		}
+	})
+	t.Run("bad-int-high", func(t *testing.T) {
+		err := validateIntOverflow(2147483648)
+		if err != nil {
+			if err.Error() != "Int must be in signed 32-bit range [-2147483647, 2147483647]: 2147483648" {
+				t.Error("want: Int must be in signed 32-bit range [-2147483647, 2147483647]: 2147483648 | got:", err)
+			}
+			return
+		}
+		t.Error("want: FAIL | got: PASS")
+	})
+	t.Run("bad-int-low", func(t *testing.T) {
+		err := validateIntOverflow(-2147483648)
+		if err != nil {
+			if err.Error() != "Int must be in signed 32-bit range [-2147483647, 2147483647]: -2147483648" {
+				t.Error("want: Int must be in signed 32-bit range [-2147483647, 2147483647]: -2147483648 | got:", err)
+			}
+			return
+		}
+		t.Error("want: FAIL | got: PASS")
+	})
+}
 
 // func TestValidateDimensions(t *testing.T) {
 // 	t.Error("Haven't implemented test")
