@@ -46,9 +46,7 @@ func moveWindow(windowName string, x int, y int, width int, height int) error {
 	if err != nil {
 		return err
 	}
-
-	fmt.Println("HWND List:", hwndList)
-	repaint := 1 // TRUE
+	repaint := 1
 
 	ret, _, err := showWindowProc.Call(hwndList[0], 9)
 	if ret == 0 {
@@ -70,7 +68,6 @@ func moveWindow(windowName string, x int, y int, width int, height int) error {
 	bringWindowToTopProc.Call(hwndList[0])
 	setForegroundWindowProc.Call(hwndList[0])
 
-	fmt.Println("Window restored, moved, resized, and brought to the foreground.")
 	return nil
 }
 

@@ -12,7 +12,7 @@
 
 ### Command: [process-name] aka move
 
-- [ ] `place process-name instance x y width height` should move the given instance of the process-name.exe window to location x, y and resize it to width x height
+- [x] `place process-name instance x y width height` should move the given instance of the process-name.exe window to location x, y and resize it to width x height
     - [x] gets the first instance of a window of `process-name.exe`
     - [x] gets a list of windows of `process-name.exe`
     - [x] moves the correct window to `x, y`
@@ -24,10 +24,10 @@
             - [x] enforces no "path characters"
             - [x] enforces no "control characters"
             - [x] strips out endings of `.exe`
-        - [ ] x, y, height, width
+        - [x] x, y, height, width
             - [x] send through `stringconv.Atoi`, will error on non-int
             - [x] enforce max value so it doesn't wrap around
-            - [ ] enforce maxima based on display size
+            - [x] enforce min/max based on display size
         - [x] instance
             - [x] send through `stringconv.Atoi`, will error on non-int
             - [x] enforce non-negative

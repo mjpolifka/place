@@ -11,17 +11,8 @@ import (
 func main() {
 	args := os.Args
 
-	// fmt.Println("All args:", args)
-
 	if len(args) > 1 {
 		switch args[1] {
-		case "test":
-			displays, err := getDisplayDimensions()
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			fmt.Println(displays)
 		default:
 			move(args)
 		}
@@ -32,8 +23,6 @@ func main() {
 }
 
 func move(args []string) {
-	fmt.Println("Move a window.")
-
 	if len(args) < 6 {
 		fmt.Println("Not enough args for 'move', show help")
 		return
@@ -45,7 +34,6 @@ func move(args []string) {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("Process name:", normalizedProcessName)
 
 	// X
 	x, err := strconv.Atoi(args[2])
@@ -53,12 +41,6 @@ func move(args []string) {
 		fmt.Println(err)
 		return
 	}
-	err = validateWindowCoord(x)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Window x:", x)
 
 	// Y
 	y, err := strconv.Atoi(args[3])
@@ -66,12 +48,6 @@ func move(args []string) {
 		fmt.Println(err)
 		return
 	}
-	err = validateWindowCoord(y)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Window y:", y)
 
 	// Width
 	width, err := strconv.Atoi(args[4])
@@ -79,12 +55,6 @@ func move(args []string) {
 		fmt.Println(err)
 		return
 	}
-	err = validateWindowSize(width)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Window width:", width)
 
 	// Height
 	height, err := strconv.Atoi(args[5])
@@ -92,15 +62,15 @@ func move(args []string) {
 		fmt.Println(err)
 		return
 	}
-	err = validateWindowSize(height)
+
+	// Validate Dimensions
+	err = validateDimensions(x, y, height, width)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("Window height:", height)
 
 	// Call Resize
-	fmt.Println("Call resize")
 	err = moveWindow(
 		normalizedProcessName,
 		x,

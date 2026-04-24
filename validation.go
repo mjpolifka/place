@@ -31,34 +31,56 @@ func normalizeProcessName(raw string) (string, error) {
 }
 
 func validateIntOverflow(i int) error {
-	minWindowInt32 := -2147483648
 	maxWindowInt32 := 2147483647
-	if i < minWindowInt32 || i > maxWindowInt32 {
-		return fmt.Errorf("Int must be in signed 32-bit range [%d, %d]: %d", minWindowInt32, maxWindowInt32, i)
+	if i < -maxWindowInt32 || i > maxWindowInt32 {
+		return fmt.Errorf("Int must be in signed 32-bit range [%d, %d]: %d", -maxWindowInt32, maxWindowInt32, i)
 	}
 	return nil
 }
 
-func validateWindowCoord(value int) error {
-	maxWindowCoord := 10000 // Max 2147483647
-	err := validateIntOverflow(value)
-	if err != nil {
+func validateDimensions(x, y, height, width int) error {
+	// Check Int Overflow
+	if err := validateIntOverflow(x); err != nil {
 		return err
 	}
-	if value < -maxWindowCoord || value > maxWindowCoord {
-		return fmt.Errorf("Window coord must be in range [0, %d]: %d", maxWindowCoord, value)
+	if err := validateIntOverflow(y); err != nil {
+		return err
 	}
-	return nil
-}
+	if err := validateIntOverflow(height); err != nil {
+		return err
+	}
+	if err := validateIntOverflow(width); err != nil {
+		return err
+	}
 
-func validateWindowSize(value int) error {
-	maxWindowSize := 10000
-	err := validateIntOverflow(value)
+	// Check against displays, first get display data
+	displays, err := getDisplayDimensions()
 	if err != nil {
 		return err
 	}
-	if value < 0 || value > maxWindowSize {
-		return fmt.Errorf("Window size must be in range [0, %d]: %d", maxWindowSize, value)
+
+	// Check X, Y within displays
+	foundDisplay := 0
+	for _, display := range displays {
+		if x >= display.Left && x <= display.Right {
+			if y >= display.Top && y <= display.Bottom {
+				foundDisplay = display.DisplayNumber
+			}
+		}
 	}
-	return nil
+	if foundDisplay == 0 {
+		return fmt.Errorf("X, Y not within displays | x,y: %d,%d", x, y)
+	}
+
+	// Check height, width within display
+	for _, display := range displays {
+		if display.DisplayNumber == foundDisplay {
+			if height <= display.Height && height >= 0 {
+				if width <= display.Width && width >= 0 {
+					return nil
+				}
+			}
+		}
+	}
+	return fmt.Errorf("width, height larger than display | width,height: %d,%d", width, height)
 }
