@@ -17,7 +17,7 @@
     - [x] gets a list of windows of `process-name.exe`
     - [x] moves the correct window to `x, y`
     - [x] resizes the correct window to `width x height`
-    - [ ] validates args don't do anything dangerous
+    - [x] validates args don't do anything dangerous
         - [x] process name
             - [x] strips out whitespace (this seems unnecessary)
             - [x] enforces not blank (also seems unnecessary)
