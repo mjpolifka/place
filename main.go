@@ -16,7 +16,7 @@ func main() {
 	if len(args) > 1 {
 		switch args[1] {
 		default:
-			locate(args)
+			move(args)
 		}
 	} else {
 		fmt.Println("Not enough arguments, show help")
@@ -24,12 +24,11 @@ func main() {
 
 }
 
-// TODO rename
-func locate(args []string) {
-	fmt.Println("Locate a window.")
+func move(args []string) {
+	fmt.Println("Move a window.")
 
 	if len(args) < 6 {
-		fmt.Println("Not enough args for 'locate', show help")
+		fmt.Println("Not enough args for 'move', show help")
 		return
 	}
 

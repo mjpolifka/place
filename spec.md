@@ -10,7 +10,7 @@
 - [ ] selected location is saved to `config.json` file
 - [ ] files live in `os.Getwd()/.Place`
 
-### Command: [process-name]
+### Command: [process-name] aka move
 
 - [ ] `place process-name instance x y width height` should move the given instance of the process-name.exe window to location x, y and resize it to width x height
     - [x] gets the first instance of a window of `process-name.exe`
@@ -36,6 +36,7 @@
         - [x] must do this before moving/resizing, nothing happens if it's minimized
         - [x] similar issue when maximized, as soon as you move it the old size returns
         - restoring if not maximized or minimized doesn't seem to have any ill effects, but not 100% sure
+- [ ] add test coverage for all spec items
 
 ## Then later, a robust way to keep things where they belong
 
@@ -45,7 +46,7 @@
     - [ ] validates `name` input isn't dangerous
         - [ ] enforces no "path characters"
         - [ ] enforces no "control characters"
-        - [ ] enforces no special characters, especially `.`
+        - [ ] enforces no special characters, especially `.`, should allow `-` and `_`
     - [ ] contains '{"name":"name", "positions":[]}'
     - [ ] updates `config.json` so `name` is selected
         - [ ] checks existence of `config.json` first
