@@ -92,6 +92,18 @@ func move(args []string) {
 	}
 	fmt.Println("Window height:", height)
 
+	displays, err := getDisplayDimensions()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	err = validatePointWithinDisplays(x, y, displays)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	// Call Resize
 	fmt.Println("Call resize")
 	err = moveWindow(
