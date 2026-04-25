@@ -198,3 +198,33 @@ func getDisplayDimensions() ([]displayDimensions, error) {
 
 	return displays, nil
 }
+
+func getWindowDimensions(validatedWindowName string) (map[string]int32, error) {
+	user32DLL := syscall.NewLazyDLL("user32.dll")
+	getWindowRectProc := user32DLL.NewProc("GetWindowRect")
+
+	hwnds, err := getHWNDs(validatedWindowName)
+	if err != nil {
+		return nil, err
+	}
+
+	var data rect
+	ret, _, err := getWindowRectProc.Call(hwnds[0], uintptr(unsafe.Pointer(&data)))
+	if ret == 0 {
+		return nil, err
+	}
+
+	dimensions := map[string]int32{}
+
+	dimensions["left"] = data.Left
+	dimensions["right"] = data.Right
+	dimensions["top"] = data.Top
+	dimensions["bottom"] = data.Bottom
+
+	dimensions["x"] = data.Left
+	dimensions["y"] = data.Top
+	dimensions["width"] = data.Right - data.Left
+	dimensions["height"] = data.Bottom - data.Top
+
+	return dimensions, nil
+}

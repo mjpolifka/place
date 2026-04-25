@@ -10,22 +10,34 @@ import (
 
 func main() {
 	args := os.Args
-	parseArgsAndRun(args)
+	if err := parseArgsAndRun(args); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
 
 func parseArgsAndRun(args []string) error {
 	if len(args) > 1 {
 		switch args[1] {
 		default:
+			if len(args) > 2 {
+				if args[2] == "is" {
+					err := is(args)
+					if err != nil {
+						return err
+					}
+					return nil
+				}
+			}
 			err := move(args)
 			if err != nil {
 				return err
 			}
+			return nil
 		}
 	} else {
 		return fmt.Errorf("Not enough arguments, show help")
 	}
-	return nil
 }
 
 func move(args []string) error {
@@ -81,5 +93,18 @@ func move(args []string) error {
 		return err
 	}
 
+	return nil
+}
+
+func is(args []string) error {
+	normalizedProcessName, err := normalizeProcessName(args[1])
+	if err != nil {
+		return err
+	}
+	data, err := getWindowDimensions(normalizedProcessName)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s: %d %d %d %d\n", normalizedProcessName, data["x"], data["y"], data["width"], data["height"])
 	return nil
 }
