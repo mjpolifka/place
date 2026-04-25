@@ -32,7 +32,7 @@
         - [x] must do this before moving/resizing, nothing happens if it's minimized
         - [x] similar issue when maximized, as soon as you move it the old size returns
         - restoring if not maximized or minimized doesn't seem to have any ill effects, but not 100% sure
-- [ ] add test coverage for all spec items
+- [x] add test coverage for all spec items (I'm missing some, but I'll open issues for those to defer them)
 
 ## Then later, a robust way to keep things where they belong
 
