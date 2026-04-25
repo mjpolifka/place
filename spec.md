@@ -28,15 +28,11 @@
             - [x] send through `stringconv.Atoi`, will error on non-int
             - [x] enforce max value so it doesn't wrap around
             - [x] enforce min/max based on display size
-        - [x] instance
-            - [x] send through `stringconv.Atoi`, will error on non-int
-            - [x] enforce non-negative
-            - [x] enforce max value of `10`
     - [x] unminimizes the window first
         - [x] must do this before moving/resizing, nothing happens if it's minimized
         - [x] similar issue when maximized, as soon as you move it the old size returns
         - restoring if not maximized or minimized doesn't seem to have any ill effects, but not 100% sure
-- [ ] add test coverage for all spec items
+- [x] add test coverage for all spec items (I'm missing some, but I'll open issues for those to defer them)
 
 ## Then later, a robust way to keep things where they belong
 
@@ -150,6 +146,11 @@
 - [ ] `place instance process-name instance x y width height` should move the given instance of the process-name.exe window to location x, y and resize it to width x height
     - [ ] requires a tracking service to register new windows creation order; will spec later
 - [ ] `place process-name instance` puts the given instance of the process-name.exe window into its saved position in the current location
+    - [ ] validates args don't do anything dangerous
+        - [ ] instance
+            - [ ] send through `stringconv.Atoi`, will error on non-int
+            - [ ] enforce non-negative
+            - [ ] enforce max value of `10`
 
 
 ### Command: Save

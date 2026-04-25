@@ -10,64 +10,63 @@ import (
 
 func main() {
 	args := os.Args
+	parseArgsAndRun(args)
+}
 
+func parseArgsAndRun(args []string) error {
 	if len(args) > 1 {
 		switch args[1] {
 		default:
-			move(args)
+			err := move(args)
+			if err != nil {
+				return err
+			}
 		}
 	} else {
-		fmt.Println("Not enough arguments, show help")
+		return fmt.Errorf("Not enough arguments, show help")
 	}
-
+	return nil
 }
 
-func move(args []string) {
+func move(args []string) error {
 	if len(args) < 6 {
-		fmt.Println("Not enough args for 'move', show help")
-		return
+		return fmt.Errorf("Not enough args for 'move', show help")
 	}
 
 	// Process Name
 	normalizedProcessName, err := normalizeProcessName(args[1])
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	// X
 	x, err := strconv.Atoi(args[2])
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	// Y
 	y, err := strconv.Atoi(args[3])
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	// Width
 	width, err := strconv.Atoi(args[4])
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	// Height
 	height, err := strconv.Atoi(args[5])
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	// Validate Dimensions
-	err = validateDimensions(x, y, height, width)
+	err = validateDimensions(x, y, width, height)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	// Call Resize
@@ -79,6 +78,8 @@ func move(args []string) {
 		height,
 	)
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
+
+	return nil
 }
