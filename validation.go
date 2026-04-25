@@ -38,7 +38,7 @@ func validateIntOverflow(i int) error {
 	return nil
 }
 
-func validateDimensions(x, y, height, width int) error {
+func validateDimensions(x, y, width, height int) error {
 	// Check Int Overflow
 	if err := validateIntOverflow(x); err != nil {
 		return err

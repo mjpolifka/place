@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"testing"
 )
 
@@ -103,6 +104,113 @@ func TestValidateIntOverflow(t *testing.T) {
 	})
 }
 
-// func TestValidateDimensions(t *testing.T) {
-// 	t.Error("Haven't implemented test")
-// }
+func TestValidateDimensions(t *testing.T) {
+	displays, err := getDisplayDimensions()
+	if err != nil {
+		t.Error(err)
+	}
+	// test passing case
+	t.Run("good-dimensions", func(t *testing.T) {
+		width := 0
+		height := 0
+		for _, display := range displays {
+			if display.Top == 0 && display.Left == 0 {
+				width = display.Width
+				height = display.Height
+			}
+		}
+		if width == 0 || height == 0 {
+			t.Error("Can't find display for 0,0")
+		}
+		err := validateDimensions(0, 0, width-1, height-1)
+		if err != nil {
+			t.Error("want: PASS | got:", err)
+		}
+	})
+	// validateIntOverflow covered above
+	// getDisplayDimensions covered in windows_calls_test
+	// test x not within displays
+	t.Run("x-not-within-displays", func(t *testing.T) {
+		// find x outside displays
+		right := 0
+		for _, display := range displays {
+			if display.Right > right {
+				right = display.Right
+			}
+		}
+		right += 1
+		// then call validateDimensions with it
+		err = validateDimensions(right, 0, 800, 800)
+		if err != nil {
+			if err.Error() != "X, Y not within displays | x,y: "+strconv.Itoa(right)+",0" {
+				t.Error("want: X, Y not within displays | x,y: "+strconv.Itoa(right)+",0 | got:", err)
+			}
+			return
+		}
+		t.Error("want: FAIL | got: PASS")
+	})
+	// test y not within displays
+	t.Run("y-not-within-displays", func(t *testing.T) {
+		// find x outside displays
+		bottom := 0
+		for _, display := range displays {
+			if display.Bottom > bottom {
+				bottom = display.Bottom
+			}
+		}
+		bottom += 1
+		// then call validateDimensions with it
+		err = validateDimensions(0, bottom, 800, 800)
+		if err != nil {
+			if err.Error() != "X, Y not within displays | x,y: 0,"+strconv.Itoa(bottom) {
+				t.Error("want: X, Y not within displays | x,y: 0,"+strconv.Itoa(bottom)+" | got:", err)
+			}
+			return
+		}
+		t.Error("want: FAIL | got: PASS")
+	})
+	// test width larger than display
+	t.Run("width-larger-than-displays", func(t *testing.T) {
+		width := 0
+		height := 0
+		for _, display := range displays {
+			if display.Top == 0 && display.Left == 0 {
+				width = display.Width
+				height = display.Height
+			}
+		}
+		if width == 0 || height == 0 {
+			t.Error("Can't find display for 0,0")
+		}
+		err = validateDimensions(0, 0, width+1, height-1)
+		if err != nil {
+			if err.Error() != "width, height larger than display | width,height: "+strconv.Itoa(width+1)+","+strconv.Itoa(height-1) {
+				t.Error("want: width, height larger than display | width,height: "+strconv.Itoa(width+1)+","+strconv.Itoa(height-1)+" | got:", err)
+			}
+			return
+		}
+		t.Error("want: FAIL | got: PASS")
+	})
+	// test height larger than display
+	t.Run("height-larger-than-displays", func(t *testing.T) {
+		width := 0
+		height := 0
+		for _, display := range displays {
+			if display.Top == 0 && display.Left == 0 {
+				width = display.Width
+				height = display.Height
+			}
+		}
+		if width == 0 || height == 0 {
+			t.Error("Can't find display for 0,0")
+		}
+		err = validateDimensions(0, 0, width-1, height+1)
+		if err != nil {
+			if err.Error() != "width, height larger than display | width,height: "+strconv.Itoa(width-1)+","+strconv.Itoa(height+1) {
+				t.Error("want: width, height larger than display | width,height: "+strconv.Itoa(width-1)+","+strconv.Itoa(height+1)+" | got:", err)
+			}
+			return
+		}
+		t.Error("want: FAIL | got: PASS")
+	})
+}

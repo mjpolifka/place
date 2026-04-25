@@ -62,7 +62,7 @@ func move(args []string) error {
 	}
 
 	// Validate Dimensions
-	err = validateDimensions(x, y, height, width)
+	err = validateDimensions(x, y, width, height)
 	if err != nil {
 		return err
 	}
