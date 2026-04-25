@@ -2,6 +2,18 @@ package main
 
 import "testing"
 
+func TestParseArgsAndRun(t *testing.T) {
+	// test not enough args
+	err := parseArgsAndRun([]string{"fake program name"})
+	if err != nil {
+		if err.Error() != "Not enough arguments, show help" {
+			t.Error("want: Not enough arguments, show help | got:", err)
+		}
+		return
+	}
+	t.Error("want: FAIL | got: PASS")
+}
+
 func TestMove(t *testing.T) {
 	// test not enough args
 	t.Run("not-enough-args", func(t *testing.T) {

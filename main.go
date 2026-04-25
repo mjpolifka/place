@@ -10,20 +10,22 @@ import (
 
 func main() {
 	args := os.Args
+	parseArgsAndRun(args)
+}
 
+func parseArgsAndRun(args []string) error {
 	if len(args) > 1 {
 		switch args[1] {
 		default:
 			err := move(args)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				return err
 			}
 		}
 	} else {
-		fmt.Println("Not enough arguments, show help")
+		return fmt.Errorf("Not enough arguments, show help")
 	}
-
+	return nil
 }
 
 func move(args []string) error {
