@@ -13,6 +13,7 @@ Have a place for every window, and be able to put them in their place
 
 ### First, a basic way to move windows
 
+- `place firefox is` prints the current x, y, width, height of firefox
 - `place firefox 200 10 1200 1300` moves firefox to position x=200, y=10, width=1200, height=1300
 
 
