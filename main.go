@@ -127,6 +127,9 @@ func create(args []string) error {
 	if err := validateLocationName(locationName); err != nil {
 		return err
 	}
-	fmt.Println("Location is valid:", locationName)
-	return fmt.Errorf("Haven't implemented yet")
+
+	if err := createNewLocationAndSave(locationName); err != nil {
+		return err
+	}
+	return nil
 }
