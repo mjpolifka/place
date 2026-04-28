@@ -30,17 +30,18 @@ func createNewLocationAndSave(name string) error {
 	if err != nil {
 		return err
 	}
-	_, err = os.Stat(filepath.Join(wd, "place.json"))
+	filePath := filepath.Join(wd, "place.json")
+
+	_, err = os.Stat(filePath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			// json doesn't exist, create it
 			placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
-			bytesJson, err := json.Marshal(placeFile)
+			jsonBytes, err := json.MarshalIndent(placeFile, "", "  ")
 			if err != nil {
 				return err
 			}
-			fmt.Println("Empty json:", string(bytesJson))
-			return fmt.Errorf("Not yet implemented: json doesn't exist, create it")
+			return os.WriteFile(filePath, jsonBytes, 0644)
 		}
 		return err
 	}
