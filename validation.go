@@ -84,3 +84,15 @@ func validateDimensions(x, y, width, height int) error {
 	}
 	return fmt.Errorf("width, height larger than display | width,height: %d,%d", width, height)
 }
+
+func validateLocationName(name string) error {
+	for _, ch := range name {
+		if ch == '/' || ch == '\\' {
+			return fmt.Errorf("location name cannot contain path separators")
+		}
+		if unicode.IsControl(ch) {
+			return fmt.Errorf("location name cannot contain control characters")
+		}
+	}
+	return nil
+}

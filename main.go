@@ -122,6 +122,11 @@ func create(args []string) error {
 	if len(args) < 3 {
 		return fmt.Errorf("Not enough args for 'create'")
 	}
-	fmt.Println("Location:", args[2])
+
+	locationName := args[2]
+	if err := validateLocationName(locationName); err != nil {
+		return err
+	}
+	fmt.Println("Location is valid:", locationName)
 	return fmt.Errorf("Haven't implemented yet")
 }
