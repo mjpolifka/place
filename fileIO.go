@@ -1,12 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 )
 
-type FileSpec struct {
+type PlaceFile struct {
 	SelectedLocation string     `json:"selected_location"`
 	Locations        []Location `json:"locations"`
 }
@@ -33,6 +34,12 @@ func createNewLocationAndSave(name string) error {
 	if err != nil {
 		if os.IsNotExist(err) {
 			// json doesn't exist, create it
+			placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
+			bytesJson, err := json.Marshal(placeFile)
+			if err != nil {
+				return err
+			}
+			fmt.Println("Empty json:", string(bytesJson))
 			return fmt.Errorf("Not yet implemented: json doesn't exist, create it")
 		}
 		return err
