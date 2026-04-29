@@ -89,7 +89,8 @@ func createNewLocationAndSave(name string) error {
 	placeFile.Locations = append(placeFile.Locations, newLocation)
 	placeFile.SelectedLocation = name
 	fmt.Println("New placeFile:", placeFile)
-	return fmt.Errorf("still need to save new placeFile")
+	savePlaceFile(placeFile, filePath)
+	return nil
 }
 
 func savePlaceFile(placeFile PlaceFile, filePath string) error {
