@@ -79,3 +79,9 @@ func TestMove(t *testing.T) {
 	// validateDimensions covered in validation_test
 	// moveWindow covered in windows_calls_test
 }
+
+func TestCreate(t *testing.T) {
+	// TODO test too many args
+	// TODO test not enough args
+	t.Error("Not yet implemented")
+}
