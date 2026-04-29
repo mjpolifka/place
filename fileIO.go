@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type PlaceFile struct {
@@ -52,12 +54,13 @@ func createNewLocationAndSave(name string) error {
 
 	var placeFile PlaceFile
 	if err = json.Unmarshal(fileBytes, &placeFile); err != nil {
-		fmt.Println("Place.json is corrupt. Overwrite? Y/N")
-		var choice string
-		_, err := fmt.Scan(&choice)
+		fmt.Println("Place.json is corrupt. Overwrite? y/N")
+		reader := bufio.NewReader(os.Stdin)
+		input, err := reader.ReadString('\n')
 		if err != nil {
 			return err
 		}
+		choice := strings.TrimSpace(input)
 		if choice == "y" || choice == "Y" {
 			fmt.Println("Overwriting...")
 			if err := saveNewPlaceFile(name, filePath); err != nil {
