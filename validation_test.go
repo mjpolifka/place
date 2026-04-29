@@ -214,3 +214,9 @@ func TestValidateDimensions(t *testing.T) {
 		t.Error("want: FAIL | got: PASS")
 	})
 }
+
+func TestValidateLocationName(t *testing.T) {
+	// TODO test path separators
+	// TODO test control characters
+	t.Error("Not yet implemented")
+}
