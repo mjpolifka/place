@@ -38,7 +38,8 @@ func createNewLocationAndSave(name string) error {
 	if err != nil {
 		if os.IsNotExist(err) {
 			// json doesn't exist, create it
-			if err := saveNewPlaceFile(name, filePath); err != nil {
+			placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
+			if err := savePlaceFile(placeFile, filePath); err != nil {
 				return err
 			}
 			return nil
@@ -63,7 +64,8 @@ func createNewLocationAndSave(name string) error {
 		choice := strings.TrimSpace(input)
 		if choice == "y" || choice == "Y" {
 			fmt.Println("Overwriting...")
-			if err := saveNewPlaceFile(name, filePath); err != nil {
+			placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
+			if err := savePlaceFile(placeFile, filePath); err != nil {
 				return err
 			}
 			return nil
@@ -90,8 +92,7 @@ func createNewLocationAndSave(name string) error {
 	return fmt.Errorf("still need to save new placeFile")
 }
 
-func saveNewPlaceFile(name, filePath string) error {
-	placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
+func savePlaceFile(placeFile PlaceFile, filePath string) error {
 	jsonBytes, err := json.MarshalIndent(placeFile, "", "  ")
 	if err != nil {
 		return err
