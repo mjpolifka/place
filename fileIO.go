@@ -36,12 +36,10 @@ func createNewLocationAndSave(name string) error {
 	if err != nil {
 		if os.IsNotExist(err) {
 			// json doesn't exist, create it
-			placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
-			jsonBytes, err := json.MarshalIndent(placeFile, "", "  ")
-			if err != nil {
+			if err := saveNewPlaceFile(name, filePath); err != nil {
 				return err
 			}
-			return os.WriteFile(filePath, jsonBytes, 0644)
+			return nil
 		}
 		return err
 	}
@@ -51,12 +49,35 @@ func createNewLocationAndSave(name string) error {
 	if err != nil {
 		return err
 	}
+
 	var placeFile PlaceFile
 	if err = json.Unmarshal(fileBytes, &placeFile); err != nil {
-		// ask to overwrite
-		return err
+		fmt.Println("Place.json is corrupt. Overwrite? Y/N")
+		var choice string
+		_, err := fmt.Scan(&choice)
+		if err != nil {
+			return err
+		}
+		if choice == "y" || choice == "Y" {
+			fmt.Println("Overwriting...")
+			if err := saveNewPlaceFile(name, filePath); err != nil {
+				return err
+			}
+			return nil
+		}
+		fmt.Println("Exiting")
+		return nil
 	}
 	fmt.Println(placeFile)
 	// check if name exists as a location
 	return fmt.Errorf("Not yet implemented: createNewLocationAndSave")
+}
+
+func saveNewPlaceFile(name, filePath string) error {
+	placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
+	jsonBytes, err := json.MarshalIndent(placeFile, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(filePath, jsonBytes, 0644)
 }
