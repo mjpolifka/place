@@ -47,6 +47,16 @@ func createNewLocationAndSave(name string) error {
 	}
 
 	// json does exist, or we just created it
-	fmt.Println(name)
+	fileBytes, err := os.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+	var placeFile PlaceFile
+	if err = json.Unmarshal(fileBytes, &placeFile); err != nil {
+		// ask to overwrite
+		return err
+	}
+	fmt.Println(placeFile)
+	// check if name exists as a location
 	return fmt.Errorf("Not yet implemented: createNewLocationAndSave")
 }
