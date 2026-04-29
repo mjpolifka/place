@@ -73,7 +73,21 @@ func createNewLocationAndSave(name string) error {
 	}
 	fmt.Println(placeFile)
 	// check if name exists as a location
-	return fmt.Errorf("Not yet implemented: createNewLocationAndSave")
+	found := false
+	for _, location := range placeFile.Locations {
+		if location.Name == name {
+			found = true
+		}
+	}
+	if found {
+		return fmt.Errorf("Can't create '%s', location already exists", name)
+	}
+	// name doesn't exist, append it to existing
+	newLocation := Location{Name: name, Places: []Place{}}
+	placeFile.Locations = append(placeFile.Locations, newLocation)
+	placeFile.SelectedLocation = name
+	fmt.Println("New placeFile:", placeFile)
+	return fmt.Errorf("still need to save new placeFile")
 }
 
 func saveNewPlaceFile(name, filePath string) error {
