@@ -81,7 +81,30 @@ func TestMove(t *testing.T) {
 }
 
 func TestCreate(t *testing.T) {
-	// TODO test too many args
-	// TODO test not enough args
-	t.Error("Not yet implemented")
+	// test too many args
+	t.Run("too-many-args", func(t *testing.T) {
+		t.Chdir(t.TempDir())
+		args := []string{"fake program name", "create", "desktop", "too_many"}
+		t.Log("len(args):", len(args))
+		if err := create(args); err != nil {
+			if err.Error() != "Too many args for 'create'" {
+				t.Error("want: Too many args for 'create' | got:", err)
+			}
+			return
+		}
+		t.Error("want: FAIL | got: PASS")
+	})
+	// test not enough args
+	t.Run("not-enough-args", func(t *testing.T) {
+		t.Chdir(t.TempDir())
+		args := []string{"fake program name", "create"}
+		t.Log("len(args):", len(args))
+		if err := create(args); err != nil {
+			if err.Error() != "Not enough args for 'create'" {
+				t.Error("want: Not enough args for 'create' | got:", err)
+			}
+			return
+		}
+		t.Error("want: FAIL | got: PASS")
+	})
 }
