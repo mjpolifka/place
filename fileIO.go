@@ -40,19 +40,23 @@ func validatePlaceFile() (bool, bool, PlaceFile, error) {
 	if err != nil {
 		if os.IsNotExist(err) {
 			// json doesn't exist
+			// fmt.Println("JSON doesn't exist, returning from validatePlaceFile")
 			return false, false, PlaceFile{}, nil
 		}
 		return false, false, PlaceFile{}, err
 	}
 	// json does exist
+	// fmt.Println("JSON does exist in validatePlaceFile")
 
 	// check if json is valid
 	var placeFile PlaceFile
 	if err = json.Unmarshal(fileBytes, &placeFile); err != nil {
 		// json is not valid
+		// fmt.Println("JSON is not valid, returning from validatePlaceFile")
 		return true, false, PlaceFile{}, nil
 	}
 	//json is valid
+	// fmt.Println("JSON exists and is valid, returning from validatePlaceFile")
 	return true, true, placeFile, nil
 }
 
@@ -80,77 +84,11 @@ func validateExistingLocationAndSave(name string, placeFile PlaceFile) error {
 	}
 
 	// name doesn't exist, append it to existing and save
+	// fmt.Println("Name doesn't exist, appending to existing file")
 	newLocation := Location{Name: name, Places: []Place{}}
 	placeFile.Locations = append(placeFile.Locations, newLocation)
 	placeFile.SelectedLocation = name
-	fmt.Println("New placeFile:", placeFile)
-	savePlaceFile(placeFile)
-	return nil
-}
-
-func createNewLocationAndSave(name string) error {
-	wd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-	filePath := filepath.Join(wd, "place.json")
-
-	_, err = os.Stat(filePath)
-	if err != nil {
-		if os.IsNotExist(err) {
-			// json doesn't exist, create it
-			placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
-			if err := savePlaceFile(placeFile); err != nil {
-				return err
-			}
-			return nil
-		}
-		return err
-	}
-
-	// json does exist, or we just created it
-	fileBytes, err := os.ReadFile(filePath)
-	if err != nil {
-		return err
-	}
-
-	var placeFile PlaceFile
-	if err = json.Unmarshal(fileBytes, &placeFile); err != nil {
-		fmt.Println("Place.json is corrupt. Overwrite? y/N")
-		reader := bufio.NewReader(os.Stdin)
-		input, err := reader.ReadString('\n')
-		if err != nil {
-			return err
-		}
-		choice := strings.TrimSpace(input)
-		if choice == "y" || choice == "Y" {
-			fmt.Println("Overwriting...")
-			placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
-			if err := savePlaceFile(placeFile); err != nil {
-				return err
-			}
-			return nil
-		}
-		fmt.Println("Exiting")
-		return nil
-	}
-
-	fmt.Println(placeFile)
-	// check if name exists as a location
-	found := false
-	for _, location := range placeFile.Locations {
-		if location.Name == name {
-			found = true
-		}
-	}
-	if found {
-		return fmt.Errorf("Can't create '%s', location already exists", name)
-	}
-	// name doesn't exist, append it to existing
-	newLocation := Location{Name: name, Places: []Place{}}
-	placeFile.Locations = append(placeFile.Locations, newLocation)
-	placeFile.SelectedLocation = name
-	fmt.Println("New placeFile:", placeFile)
+	// fmt.Println("Saving new placeFile:", placeFile)
 	savePlaceFile(placeFile)
 	return nil
 }

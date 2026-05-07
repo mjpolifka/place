@@ -129,9 +129,13 @@ func create(args []string) error {
 	}
 
 	exist, valid, placeFile, err := validatePlaceFile()
+	if err != nil {
+		return err
+	}
 
 	if !exist {
-		placeFile = PlaceFile{SelectedLocation: locationName, Locations: []Location{{Name: locationName, Places: []Place{}}}}
+		// fmt.Println("Creating empty placeFile A")
+		placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
 		savePlaceFile(placeFile)
 	} else if !valid {
 		userInput, err := getUserInput(os.Stdin)
@@ -139,7 +143,8 @@ func create(args []string) error {
 			return err
 		}
 		if userInput == "y" || userInput == "Y" {
-			placeFile = PlaceFile{SelectedLocation: locationName, Locations: []Location{{Name: locationName, Places: []Place{}}}}
+			// fmt.Println("Creating empty placeFile B")
+			placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
 			savePlaceFile(placeFile)
 		} else {
 			return nil
