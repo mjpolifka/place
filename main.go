@@ -123,11 +123,13 @@ func create(args []string) error {
 		return fmt.Errorf("Not enough args for 'create'")
 	}
 
+	// Validate the input from the user before using it
 	locationName := args[2]
 	if err := validateLocationName(locationName); err != nil {
 		return err
 	}
 
+	// Validate placeFile exists and is valid
 	exist, valid, placeFile, err := validatePlaceFile()
 	if err != nil {
 		return err
@@ -136,7 +138,6 @@ func create(args []string) error {
 	if !exist {
 		// fmt.Println("Creating empty placeFile A")
 		placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
-		savePlaceFile(placeFile)
 	} else if !valid {
 		userInput, err := getUserInput(os.Stdin)
 		if err != nil {
@@ -145,7 +146,6 @@ func create(args []string) error {
 		if userInput == "y" || userInput == "Y" {
 			// fmt.Println("Creating empty placeFile B")
 			placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
-			savePlaceFile(placeFile)
 		} else {
 			return nil
 		} // exit
@@ -156,8 +156,13 @@ func create(args []string) error {
 	// 	or file wasn't valid and was overwritten
 	// no matter which path is taken, the file now exists and is valid, or we exited
 
-	// exists and is valid, check if name exists
-	if err = validateExistingLocationAndSave(locationName, placeFile); err != nil {
+	// exists and is valid, append new location if it doesn't exist
+	if err = appendNewLocation(locationName, &placeFile); err != nil {
+		return err
+	}
+
+	// fmt.Println("Saving placeFile")
+	if err = savePlaceFile(placeFile); err != nil {
 		return err
 	}
 
