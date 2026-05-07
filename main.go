@@ -128,10 +128,10 @@ func create(args []string) error {
 		return err
 	}
 
-	exist, valid, err := validatePlaceFile()
+	exist, valid, placeFile, err := validatePlaceFile()
 
 	if !exist {
-		placeFile := PlaceFile{SelectedLocation: locationName, Locations: []Location{{Name: locationName, Places: []Place{}}}}
+		placeFile = PlaceFile{SelectedLocation: locationName, Locations: []Location{{Name: locationName, Places: []Place{}}}}
 		savePlaceFile(placeFile)
 	} else if !valid {
 		userInput, err := getUserInput(os.Stdin)
@@ -139,7 +139,7 @@ func create(args []string) error {
 			return err
 		}
 		if userInput == "y" || userInput == "Y" {
-			placeFile := PlaceFile{SelectedLocation: locationName, Locations: []Location{{Name: locationName, Places: []Place{}}}}
+			placeFile = PlaceFile{SelectedLocation: locationName, Locations: []Location{{Name: locationName, Places: []Place{}}}}
 			savePlaceFile(placeFile)
 		} else {
 			return nil
@@ -152,7 +152,7 @@ func create(args []string) error {
 	// no matter which path is taken, the file now exists and is valid, or we exited
 
 	// exists and is valid, check if name exists
-	if err = validateExistingLocationAndSave(locationName); err != nil {
+	if err = validateExistingLocationAndSave(locationName, placeFile); err != nil {
 		return err
 	}
 

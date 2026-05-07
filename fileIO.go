@@ -28,10 +28,10 @@ type Place struct {
 	Height int    `json:"height"`
 }
 
-func validatePlaceFile() (exist bool, valid bool, err error) {
+func validatePlaceFile() (bool, bool, PlaceFile, error) {
 	wd, err := os.Getwd()
 	if err != nil {
-		return false, false, err
+		return false, false, PlaceFile{}, err
 	}
 	filePath := filepath.Join(wd, "place.json")
 
@@ -40,9 +40,9 @@ func validatePlaceFile() (exist bool, valid bool, err error) {
 	if err != nil {
 		if os.IsNotExist(err) {
 			// json doesn't exist
-			return false, false, nil
+			return false, false, PlaceFile{}, nil
 		}
-		return false, false, err
+		return false, false, PlaceFile{}, err
 	}
 	// json does exist
 
@@ -50,10 +50,10 @@ func validatePlaceFile() (exist bool, valid bool, err error) {
 	var placeFile PlaceFile
 	if err = json.Unmarshal(fileBytes, &placeFile); err != nil {
 		// json is not valid
-		return true, false, nil
+		return true, false, PlaceFile{}, nil
 	}
 	//json is valid
-	return true, true, nil
+	return true, true, placeFile, nil
 }
 
 func getUserInput(in io.Reader) (string, error) {
@@ -67,7 +67,24 @@ func getUserInput(in io.Reader) (string, error) {
 	return strings.TrimSpace(input), nil
 }
 
-func validateExistingLocationAndSave(name string) error {
+func validateExistingLocationAndSave(name string, placeFile PlaceFile) error {
+	// check if name exists as a location
+	found := false
+	for _, location := range placeFile.Locations {
+		if location.Name == name {
+			found = true
+		}
+	}
+	if found {
+		return fmt.Errorf("Can't create '%s', location already exists", name)
+	}
+
+	// name doesn't exist, append it to existing and save
+	newLocation := Location{Name: name, Places: []Place{}}
+	placeFile.Locations = append(placeFile.Locations, newLocation)
+	placeFile.SelectedLocation = name
+	fmt.Println("New placeFile:", placeFile)
+	savePlaceFile(placeFile)
 	return nil
 }
 
