@@ -28,7 +28,31 @@ type Place struct {
 }
 
 func validatePlaceFile() (exist bool, valid bool, err error) {
-	return false, false, nil
+	wd, err := os.Getwd()
+	if err != nil {
+		return false, false, err
+	}
+	filePath := filepath.Join(wd, "place.json")
+
+	// check if json exists
+	fileBytes, err := os.ReadFile(filePath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			// json doesn't exist
+			return false, false, nil
+		}
+		return false, false, err
+	}
+	// json does exist
+
+	// check if json is valid
+	var placeFile PlaceFile
+	if err = json.Unmarshal(fileBytes, &placeFile); err != nil {
+		// json is not valid
+		return true, false, nil
+	}
+	//json is valid
+	return true, true, nil
 }
 
 func validateExistingLocationAndSave(name string) error {
