@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -55,9 +56,10 @@ func validatePlaceFile() (exist bool, valid bool, err error) {
 	return true, true, nil
 }
 
-func getUserInput() (string, error) {
+func getUserInput(in io.Reader) (string, error) {
 	fmt.Println("Place.json is corrupt. Overwrite? y/N")
-	reader := bufio.NewReader(os.Stdin)
+
+	reader := bufio.NewReader(in)
 	input, err := reader.ReadString('\n')
 	if err != nil {
 		return "", err

@@ -134,7 +134,7 @@ func create(args []string) error {
 		placeFile := PlaceFile{SelectedLocation: locationName, Locations: []Location{{Name: locationName, Places: []Place{}}}}
 		savePlaceFile(placeFile)
 	} else if !valid {
-		userInput, err := getUserInput()
+		userInput, err := getUserInput(os.Stdin)
 		if err != nil {
 			return err
 		}
