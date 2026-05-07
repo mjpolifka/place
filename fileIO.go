@@ -27,6 +27,14 @@ type Place struct {
 	Height int    `json:"height"`
 }
 
+func validatePlaceFile() (exist bool, valid bool, err error) {
+	return false, false, nil
+}
+
+func validateExistingLocationAndSave(name string) error {
+	return nil
+}
+
 func createNewLocationAndSave(name string) error {
 	wd, err := os.Getwd()
 	if err != nil {
@@ -73,6 +81,7 @@ func createNewLocationAndSave(name string) error {
 		fmt.Println("Exiting")
 		return nil
 	}
+
 	fmt.Println(placeFile)
 	// check if name exists as a location
 	found := false
