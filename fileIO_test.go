@@ -2,15 +2,26 @@ package main
 
 import "testing"
 
-func TestCreateNewLocationAndSave(t *testing.T) {
-	// TODO test corrupt file - how do we do keyboard input?
-	// TODO test creates file if it doesn't exist
-	// TODO test can't create new location, already exists
+func TestValidatePlaceFile(t *testing.T) {
+	// test file doesn't exist
+	// test file exists but is invalid
+	// test file exists and is valid
+	t.Error("Not yet implemented")
+}
+
+func TestGetUserInput(t *testing.T) {
+	// test input string matches return string
+	t.Error("Not yet implemented")
+}
+
+func TestAppendNewLocation(t *testing.T) {
+	// test location already exists
+	// test location doesn't exist
 	t.Error("Not yet implemented")
 }
 
 func TestSavePlaceFile(t *testing.T) {
-	// TODO test known good data
-	// TODO test known bad data
+	// test known good data
+	// test known bad data
 	t.Error("Not yet implemented")
 }
