@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -27,53 +28,50 @@ type Place struct {
 	Height int    `json:"height"`
 }
 
-func createNewLocationAndSave(name string) error {
+func validatePlaceFile() (bool, bool, PlaceFile, error) {
 	wd, err := os.Getwd()
 	if err != nil {
-		return err
+		return false, false, PlaceFile{}, err
 	}
 	filePath := filepath.Join(wd, "place.json")
 
-	_, err = os.Stat(filePath)
-	if err != nil {
-		if os.IsNotExist(err) {
-			// json doesn't exist, create it
-			placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
-			if err := savePlaceFile(placeFile, filePath); err != nil {
-				return err
-			}
-			return nil
-		}
-		return err
-	}
-
-	// json does exist, or we just created it
+	// check if json exists
 	fileBytes, err := os.ReadFile(filePath)
 	if err != nil {
-		return err
+		if os.IsNotExist(err) {
+			// json doesn't exist
+			// fmt.Println("JSON doesn't exist, returning from validatePlaceFile")
+			return false, false, PlaceFile{}, nil
+		}
+		return false, false, PlaceFile{}, err
 	}
+	// json does exist
+	// fmt.Println("JSON does exist in validatePlaceFile")
 
+	// check if json is valid
 	var placeFile PlaceFile
 	if err = json.Unmarshal(fileBytes, &placeFile); err != nil {
-		fmt.Println("Place.json is corrupt. Overwrite? y/N")
-		reader := bufio.NewReader(os.Stdin)
-		input, err := reader.ReadString('\n')
-		if err != nil {
-			return err
-		}
-		choice := strings.TrimSpace(input)
-		if choice == "y" || choice == "Y" {
-			fmt.Println("Overwriting...")
-			placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
-			if err := savePlaceFile(placeFile, filePath); err != nil {
-				return err
-			}
-			return nil
-		}
-		fmt.Println("Exiting")
-		return nil
+		// json is not valid
+		// fmt.Println("JSON is not valid, returning from validatePlaceFile")
+		return true, false, PlaceFile{}, nil
 	}
-	fmt.Println(placeFile)
+	//json is valid
+	// fmt.Println("JSON exists and is valid, returning from validatePlaceFile")
+	return true, true, placeFile, nil
+}
+
+func getUserInput(in io.Reader) (string, error) {
+	fmt.Println("Place.json is corrupt. Overwrite? y/N")
+
+	reader := bufio.NewReader(in)
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(input), nil
+}
+
+func validateExistingLocationAndSave(name string, placeFile PlaceFile) error {
 	// check if name exists as a location
 	found := false
 	for _, location := range placeFile.Locations {
@@ -84,16 +82,24 @@ func createNewLocationAndSave(name string) error {
 	if found {
 		return fmt.Errorf("Can't create '%s', location already exists", name)
 	}
-	// name doesn't exist, append it to existing
+
+	// name doesn't exist, append it to existing and save
+	// fmt.Println("Name doesn't exist, appending to existing file")
 	newLocation := Location{Name: name, Places: []Place{}}
 	placeFile.Locations = append(placeFile.Locations, newLocation)
 	placeFile.SelectedLocation = name
-	fmt.Println("New placeFile:", placeFile)
-	savePlaceFile(placeFile, filePath)
+	// fmt.Println("Saving new placeFile:", placeFile)
+	savePlaceFile(placeFile)
 	return nil
 }
 
-func savePlaceFile(placeFile PlaceFile, filePath string) error {
+func savePlaceFile(placeFile PlaceFile) error {
+	wd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	filePath := filepath.Join(wd, "place.json")
+
 	jsonBytes, err := json.MarshalIndent(placeFile, "", "  ")
 	if err != nil {
 		return err
