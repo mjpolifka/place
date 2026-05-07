@@ -128,6 +128,25 @@ func create(args []string) error {
 		return err
 	}
 
+	// exist, valid, err := validatePlaceFile()
+
+	// if !exist {
+	// ..placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
+	// ..savePlaceFile(placeFile, filePath)
+	// }
+	// else if !valid {
+	// ..userInput := getUserInput
+	// ..if userInput == ('y' || 'Y') {
+	// ....placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
+	// ....savePlaceFile(placeFile, filePath)
+	// ..}
+	// }
+	// else { // exists and is valid, check if name exists
+	// ..if err = validateExistingLocationAndSave(locationName); err != nil {
+	// ....return err
+	// ..}
+	// }
+
 	if err := createNewLocationAndSave(locationName); err != nil {
 		return err
 	}
