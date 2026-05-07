@@ -55,6 +55,16 @@ func validatePlaceFile() (exist bool, valid bool, err error) {
 	return true, true, nil
 }
 
+func getUserInput() (string, error) {
+	fmt.Println("Place.json is corrupt. Overwrite? y/N")
+	reader := bufio.NewReader(os.Stdin)
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(input), nil
+}
+
 func validateExistingLocationAndSave(name string) error {
 	return nil
 }
@@ -71,7 +81,7 @@ func createNewLocationAndSave(name string) error {
 		if os.IsNotExist(err) {
 			// json doesn't exist, create it
 			placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
-			if err := savePlaceFile(placeFile, filePath); err != nil {
+			if err := savePlaceFile(placeFile); err != nil {
 				return err
 			}
 			return nil
@@ -97,7 +107,7 @@ func createNewLocationAndSave(name string) error {
 		if choice == "y" || choice == "Y" {
 			fmt.Println("Overwriting...")
 			placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
-			if err := savePlaceFile(placeFile, filePath); err != nil {
+			if err := savePlaceFile(placeFile); err != nil {
 				return err
 			}
 			return nil
@@ -122,11 +132,17 @@ func createNewLocationAndSave(name string) error {
 	placeFile.Locations = append(placeFile.Locations, newLocation)
 	placeFile.SelectedLocation = name
 	fmt.Println("New placeFile:", placeFile)
-	savePlaceFile(placeFile, filePath)
+	savePlaceFile(placeFile)
 	return nil
 }
 
-func savePlaceFile(placeFile PlaceFile, filePath string) error {
+func savePlaceFile(placeFile PlaceFile) error {
+	wd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	filePath := filepath.Join(wd, "place.json")
+
 	jsonBytes, err := json.MarshalIndent(placeFile, "", "  ")
 	if err != nil {
 		return err

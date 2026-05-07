@@ -128,29 +128,33 @@ func create(args []string) error {
 		return err
 	}
 
-	// exist, valid, err := validatePlaceFile()
+	exist, valid, err := validatePlaceFile()
 
-	// if !exist {
-	// ..placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
-	// ..savePlaceFile(placeFile, filePath)
-	// }
-	// else if !valid {
-	// ..userInput := getUserInput
-	// ..if userInput == ('y' || 'Y') {
-	// ....placeFile := PlaceFile{SelectedLocation: name, Locations: []Location{{Name: name, Places: []Place{}}}}
-	// ....savePlaceFile(placeFile, filePath)
-	// ..} else { return nil } // exit
-	// }
-	// // only 3 ways out of the above block: file exists and is valid, file didn't exist and was created, or file wasn't valid and was overwritten
-	// // no matter which path is taken, the file now exists and is valid, or we exited
-	//
-	// // exists and is valid, check if name exists
-	// ..if err = validateExistingLocationAndSave(locationName); err != nil {
-	// ....return err
-	// ..}
+	if !exist {
+		placeFile := PlaceFile{SelectedLocation: locationName, Locations: []Location{{Name: locationName, Places: []Place{}}}}
+		savePlaceFile(placeFile)
+	} else if !valid {
+		userInput, err := getUserInput()
+		if err != nil {
+			return err
+		}
+		if userInput == "y" || userInput == "Y" {
+			placeFile := PlaceFile{SelectedLocation: locationName, Locations: []Location{{Name: locationName, Places: []Place{}}}}
+			savePlaceFile(placeFile)
+		} else {
+			return nil
+		} // exit
+	}
+	// only 3 ways out of the above block:
+	// 	file exists and is valid,
+	// 	file didn't exist and was created,
+	// 	or file wasn't valid and was overwritten
+	// no matter which path is taken, the file now exists and is valid, or we exited
 
-	if err := createNewLocationAndSave(locationName); err != nil {
+	// exists and is valid, check if name exists
+	if err = validateExistingLocationAndSave(locationName); err != nil {
 		return err
 	}
+
 	return nil
 }
