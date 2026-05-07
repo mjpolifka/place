@@ -143,7 +143,7 @@ func create(args []string) error {
 		if err != nil {
 			return err
 		}
-		if userInput == "y" || userInput == "Y" {
+		if userInput[0] == 'y' || userInput[0] == 'Y' {
 			// fmt.Println("Creating empty placeFile B")
 			placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
 		} else {
