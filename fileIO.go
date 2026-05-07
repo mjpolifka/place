@@ -71,7 +71,7 @@ func getUserInput(in io.Reader) (string, error) {
 	return strings.TrimSpace(input), nil
 }
 
-func validateExistingLocationAndSave(name string, placeFile PlaceFile) error {
+func appendNewLocation(name string, placeFile *PlaceFile) error {
 	// check if name exists as a location
 	found := false
 	for _, location := range placeFile.Locations {
@@ -83,13 +83,12 @@ func validateExistingLocationAndSave(name string, placeFile PlaceFile) error {
 		return fmt.Errorf("Can't create '%s', location already exists", name)
 	}
 
-	// name doesn't exist, append it to existing and save
+	// name doesn't exist, append it to existing
 	// fmt.Println("Name doesn't exist, appending to existing file")
 	newLocation := Location{Name: name, Places: []Place{}}
 	placeFile.Locations = append(placeFile.Locations, newLocation)
 	placeFile.SelectedLocation = name
-	// fmt.Println("Saving new placeFile:", placeFile)
-	savePlaceFile(placeFile)
+
 	return nil
 }
 
