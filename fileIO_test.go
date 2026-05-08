@@ -91,12 +91,22 @@ func TestGetUserInput(t *testing.T) {
 
 func TestAppendNewLocation(t *testing.T) {
 	// test location already exists
+	t.Run("test-already-exists", func(t *testing.T) {
+		t.Error("Not yet implemented")
+	})
 	// test location doesn't exist
-	t.Error("Not yet implemented")
+	t.Run("test-doesnt-exist", func(t *testing.T) {
+		t.Error("Not yet implemented")
+	})
 }
 
 func TestSavePlaceFile(t *testing.T) {
 	// test known good data
+	t.Run("test-good-data", func(t *testing.T) {
+		t.Error("Not yet implemented")
+	})
 	// test known bad data
-	t.Error("Not yet implemented")
+	t.Run("test-bad-data", func(t *testing.T) {
+		t.Error("Not yet implemented")
+	})
 }
