@@ -158,8 +158,9 @@ func create(wd string, locationName string) error {
 			} else {
 				return nil
 			} // exit
+		} else {
+			return err
 		}
-		return err
 	}
 	// only 3 ways out of the above block:
 	// 	file exists and is valid,
@@ -199,8 +200,9 @@ func selectLocation(wd string, locationName string) error {
 			} else {
 				return nil
 			} // exit
+		} else {
+			return err
 		}
-		return err
 	}
 	// only 3 ways out of the above block:
 	// 	file exists and is valid,
