@@ -140,35 +140,12 @@ func is(args []string) error {
 }
 
 func create(wd string, locationName string) error {
-	// Validate placeFile exists and is valid
-	placeFile, err := readPlaceFile(wd)
+	placeFile, err := validatePlaceFile(wd)
 	if err != nil {
-		if os.IsNotExist(err) {
-			// fmt.Println("Creating empty placeFile A")
-			placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
-		} else if IsInvalidPlaceFile(err) {
-			fmt.Println("Place.json is corrupt. Overwrite? y/N")
-			userInput, err := getUserInput(os.Stdin)
-			if err != nil {
-				return err
-			}
-			if userInput[0] == 'y' || userInput[0] == 'Y' {
-				// fmt.Println("Creating empty placeFile B")
-				placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
-			} else {
-				return nil
-			} // exit
-		} else {
-			return err
-		}
+		return err
 	}
-	// only 3 ways out of the above block:
-	// 	file exists and is valid,
-	// 	file didn't exist and was created,
-	// 	or file wasn't valid and was overwritten
-	// no matter which path is taken, the file now exists and is valid, or we exited
 
-	// exists and is valid, append new location if it doesn't exist
+	// place.json exists and is valid, append new location if the location doesn't exist
 	if err = appendNewLocation(locationName, &placeFile); err != nil {
 		return err
 	}
@@ -183,26 +160,9 @@ func create(wd string, locationName string) error {
 
 func selectLocation(wd string, locationName string) error {
 	// Validate placeFile exists and is valid
-	placeFile, err := readPlaceFile(wd)
+	placeFile, err := validatePlaceFile(wd)
 	if err != nil {
-		if os.IsNotExist(err) {
-			// fmt.Println("Creating empty placeFile A")
-			placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
-		} else if IsInvalidPlaceFile(err) {
-			fmt.Println("Place.json is corrupt. Overwrite? y/N")
-			userInput, err := getUserInput(os.Stdin)
-			if err != nil {
-				return err
-			}
-			if userInput[0] == 'y' || userInput[0] == 'Y' {
-				// fmt.Println("Creating empty placeFile B")
-				placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
-			} else {
-				return nil
-			} // exit
-		} else {
-			return err
-		}
+		return err
 	}
 	// only 3 ways out of the above block:
 	// 	file exists and is valid,

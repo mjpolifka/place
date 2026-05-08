@@ -46,6 +46,33 @@ func IsInvalidPlaceFile(err error) bool {
 	return errors.As(err, &invalidErr)
 }
 
+func validatePlaceFile(wd string) (PlaceFile, error) {
+	placeFile, err := readPlaceFile(wd)
+	if err != nil {
+		if os.IsNotExist(err) {
+			// fmt.Println("Creating empty placeFile A")
+			placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
+			return placeFile, nil
+		} else if IsInvalidPlaceFile(err) {
+			fmt.Println("Place.json is corrupt. Overwrite? y/N")
+			userInput, err := getUserInput(os.Stdin)
+			if err != nil {
+				return PlaceFile{}, err
+			}
+			if userInput[0] == 'y' || userInput[0] == 'Y' {
+				// fmt.Println("Creating empty placeFile B")
+				placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
+				return placeFile, nil
+			} else {
+				os.Exit(0)
+			} // exit
+		} else {
+			return PlaceFile{}, err
+		}
+	}
+	return placeFile, nil
+}
+
 func readPlaceFile(wd string) (PlaceFile, error) { // exist, valid, placeFile, err
 	filePath := filepath.Join(wd, "place.json")
 
