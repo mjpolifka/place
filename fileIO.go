@@ -28,11 +28,7 @@ type Place struct {
 	Height int    `json:"height"`
 }
 
-func validatePlaceFile() (bool, bool, PlaceFile, error) { // exist, valid, placeFile, err
-	wd, err := os.Getwd()
-	if err != nil {
-		return false, false, PlaceFile{}, err
-	}
+func validatePlaceFile(wd string) (bool, bool, PlaceFile, error) { // exist, valid, placeFile, err
 	filePath := filepath.Join(wd, "place.json")
 
 	// check if json exists
@@ -91,11 +87,7 @@ func appendNewLocation(name string, placeFile *PlaceFile) error {
 	return nil
 }
 
-func savePlaceFile(placeFile PlaceFile) error {
-	wd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
+func savePlaceFile(wd string, placeFile PlaceFile) error {
 	filePath := filepath.Join(wd, "place.json")
 
 	jsonBytes, err := json.MarshalIndent(placeFile, "", "  ")
