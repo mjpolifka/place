@@ -119,12 +119,23 @@ func TestAppendNewLocation(t *testing.T) {
 }
 
 func TestSavePlaceFile(t *testing.T) {
-	// test known good data
-	t.Run("test-good-data", func(t *testing.T) {
-		t.Error("Not yet implemented")
-	})
-	// test known bad data
-	t.Run("test-bad-data", func(t *testing.T) {
-		t.Error("Not yet implemented")
-	})
+	// setup test
+	tempDir := t.TempDir()
+	t.Chdir(tempDir)
+	placeFile := PlaceFile{SelectedLocation: "desktop", Locations: []Location{}}
+	placeFile.Locations = append(placeFile.Locations, Location{Name: "desktop", Places: []Place{}})
+
+	// start test
+	if err := savePlaceFile(placeFile); err != nil {
+		t.Fatal("want: PASS | got:", err)
+	}
+
+	path := filepath.Join(tempDir, "place.json")
+	fileBytes, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal("want: PASS | got:", err)
+	}
+	if err = json.Unmarshal(fileBytes, &placeFile); err != nil {
+		t.Fatal("want: PASS | got:", err)
+	}
 }
