@@ -22,7 +22,16 @@ func parseArgsAndRun(args []string) error {
 	if len(args) > 1 {
 		switch args[1] {
 		case "create":
-			if err := create(args); err != nil {
+			if len(args) > 3 {
+				return fmt.Errorf("Too many args for 'create'")
+			}
+			if len(args) < 3 {
+				return fmt.Errorf("Not enough args for 'create'")
+			}
+			locationName := args[2]
+			if err := validateLocationName(locationName); err != nil {
+				return err
+			} else if err := create(wd, locationName); err != nil {
 				return err
 			}
 			return nil
@@ -130,22 +139,7 @@ func is(args []string) error {
 	return nil
 }
 
-func create(args []string) error {
-	if len(args) > 3 {
-		return fmt.Errorf("Too many args for 'create'")
-	}
-	if len(args) < 3 {
-		return fmt.Errorf("Not enough args for 'create'")
-	}
-
-	wd := filepath.Dir(args[0])
-
-	// Validate the input from the user before using it
-	locationName := args[2]
-	if err := validateLocationName(locationName); err != nil {
-		return err
-	}
-
+func create(wd string, locationName string) error {
 	// Validate placeFile exists and is valid
 	exist, valid, placeFile, err := validatePlaceFile(wd)
 	if err != nil {
