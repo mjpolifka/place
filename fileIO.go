@@ -28,7 +28,7 @@ type Place struct {
 	Height int    `json:"height"`
 }
 
-func validatePlaceFile() (bool, bool, PlaceFile, error) {
+func validatePlaceFile() (bool, bool, PlaceFile, error) { // exist, valid, placeFile, err
 	wd, err := os.Getwd()
 	if err != nil {
 		return false, false, PlaceFile{}, err
@@ -47,13 +47,14 @@ func validatePlaceFile() (bool, bool, PlaceFile, error) {
 	}
 	// json does exist
 	// fmt.Println("JSON does exist in validatePlaceFile")
+	// fmt.Println("fileBytes:", string(fileBytes))
 
 	// check if json is valid
 	var placeFile PlaceFile
 	if err = json.Unmarshal(fileBytes, &placeFile); err != nil {
 		// json is not valid
 		// fmt.Println("JSON is not valid, returning from validatePlaceFile")
-		return true, false, PlaceFile{}, nil
+		return true, false, PlaceFile{}, nil // error == nil because this is how we check valid == false
 	}
 	//json is valid
 	// fmt.Println("JSON exists and is valid, returning from validatePlaceFile")
@@ -61,8 +62,6 @@ func validatePlaceFile() (bool, bool, PlaceFile, error) {
 }
 
 func getUserInput(in io.Reader) (string, error) {
-	fmt.Println("Place.json is corrupt. Overwrite? y/N")
-
 	reader := bufio.NewReader(in)
 	input, err := reader.ReadString('\n')
 	if err != nil {
