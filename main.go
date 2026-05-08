@@ -171,13 +171,26 @@ func selectLocation(wd string, locationName string) error {
 			exists = true
 		}
 	}
-	fmt.Println(placeFile) // TEMP need to use the variable
-	fmt.Println("Exists:", exists)
-	return nil
+	// fmt.Println(placeFile) // TEMP need to use the variable
+	// fmt.Println("Exists:", exists)
 
 	// If it doesn't exist, ask to create it
-
-	// If the user said yes, create it
+	if !exists {
+		fmt.Printf("Location '%s' doesn't exist, create it? y/N", locationName)
+		choice, err := getUserInput(os.Stdin)
+		if err != nil {
+			return err
+		}
+		if choice[0] == 'y' || choice[0] == 'Y' {
+			// If the user said yes, create it
+			appendNewLocation(locationName, &placeFile)
+		} else {
+			os.Exit(0)
+		}
+	}
 
 	// Set the SelectedLocation to the new location and save
+	placeFile.SelectedLocation = locationName
+	savePlaceFile(wd, placeFile)
+	return nil
 }

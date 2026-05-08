@@ -103,7 +103,12 @@ func getUserInput(in io.Reader) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return strings.TrimSpace(input), nil
+	input = strings.TrimSpace(input)
+	if input == "" {
+		return "N", nil
+	} else {
+		return input, nil
+	}
 }
 
 func appendNewLocation(name string, placeFile *PlaceFile) error {
