@@ -12,10 +12,11 @@ func TestValidatePlaceFile(t *testing.T) {
 	// test file doesn't exist
 	t.Run("file-doesnt-exist", func(t *testing.T) {
 		// change to T.TempDir, then file won't exist
-		t.Chdir(t.TempDir())
+		tempDir := t.TempDir()
+		t.Chdir(tempDir)
 
 		// start test
-		exist, _, _, err := validatePlaceFile()
+		exist, _, _, err := validatePlaceFile(tempDir)
 		if err != nil {
 			t.Fatal("want: exist==false | got: ERROR")
 		}
@@ -36,7 +37,7 @@ func TestValidatePlaceFile(t *testing.T) {
 		}
 
 		// start test
-		exist, valid, _, err := validatePlaceFile()
+		exist, valid, _, err := validatePlaceFile(tempDir)
 		if err != nil {
 			t.Fatal("want: exist==true && valid==false | got:", err)
 		}
@@ -64,7 +65,7 @@ func TestValidatePlaceFile(t *testing.T) {
 		}
 
 		// start test
-		exist, valid, _, err := validatePlaceFile()
+		exist, valid, _, err := validatePlaceFile(tempDir)
 		if err != nil {
 			t.Fatal("want: exist==true && valid==true | got:", err)
 		}
@@ -126,7 +127,7 @@ func TestSavePlaceFile(t *testing.T) {
 	placeFile.Locations = append(placeFile.Locations, Location{Name: "desktop", Places: []Place{}})
 
 	// start test
-	if err := savePlaceFile(placeFile); err != nil {
+	if err := savePlaceFile(tempDir, placeFile); err != nil {
 		t.Fatal("want: PASS | got:", err)
 	}
 

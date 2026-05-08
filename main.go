@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 )
 
@@ -123,6 +124,8 @@ func create(args []string) error {
 		return fmt.Errorf("Not enough args for 'create'")
 	}
 
+	wd := filepath.Dir(args[0])
+
 	// Validate the input from the user before using it
 	locationName := args[2]
 	if err := validateLocationName(locationName); err != nil {
@@ -130,7 +133,7 @@ func create(args []string) error {
 	}
 
 	// Validate placeFile exists and is valid
-	exist, valid, placeFile, err := validatePlaceFile()
+	exist, valid, placeFile, err := validatePlaceFile(wd)
 	if err != nil {
 		return err
 	}
@@ -163,7 +166,7 @@ func create(args []string) error {
 	}
 
 	// fmt.Println("Saving placeFile")
-	if err = savePlaceFile(placeFile); err != nil {
+	if err = savePlaceFile(wd, placeFile); err != nil {
 		return err
 	}
 
