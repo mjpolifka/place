@@ -92,11 +92,29 @@ func TestGetUserInput(t *testing.T) {
 func TestAppendNewLocation(t *testing.T) {
 	// test location already exists
 	t.Run("test-already-exists", func(t *testing.T) {
-		t.Error("Not yet implemented")
+		// setup test
+		placeFile := PlaceFile{SelectedLocation: "desktop", Locations: []Location{}}
+		placeFile.Locations = append(placeFile.Locations, Location{Name: "desktop", Places: []Place{}})
+
+		// start test
+		if err := appendNewLocation("desktop", &placeFile); err != nil {
+			if err.Error() != "Can't create 'desktop', location already exists" {
+				t.Error("want: Can't create 'desktop', location already exists | got:", err)
+			}
+		} else {
+			t.Error("want: Can't create 'desktop', location already exists | got: PASS")
+		}
 	})
 	// test location doesn't exist
 	t.Run("test-doesnt-exist", func(t *testing.T) {
-		t.Error("Not yet implemented")
+		// setup test
+		placeFile := PlaceFile{SelectedLocation: "desktop", Locations: []Location{}}
+		placeFile.Locations = append(placeFile.Locations, Location{Name: "desktop", Places: []Place{}})
+
+		// start test
+		if err := appendNewLocation("laptop", &placeFile); err != nil {
+			t.Error("want: PASS | got:", err)
+		}
 	})
 }
 
