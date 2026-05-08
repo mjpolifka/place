@@ -139,6 +139,7 @@ func create(args []string) error {
 		// fmt.Println("Creating empty placeFile A")
 		placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
 	} else if !valid {
+		fmt.Println("Place.json is corrupt. Overwrite? y/N")
 		userInput, err := getUserInput(os.Stdin)
 		if err != nil {
 			return err
