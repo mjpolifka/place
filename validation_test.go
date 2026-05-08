@@ -214,3 +214,47 @@ func TestValidateDimensions(t *testing.T) {
 		t.Error("want: FAIL | got: PASS")
 	})
 }
+
+func TestValidateLocationName(t *testing.T) {
+	// test good location
+	t.Run("good-location", func(t *testing.T) {
+		err := validateLocationName("dEsk-T_op")
+		if err != nil {
+			t.Error(err)
+		}
+	})
+
+	// test with path separators, expect err
+	t.Run("path-separator-forward", func(t *testing.T) {
+		err := validateLocationName("desk/top")
+		if err != nil {
+			if err.Error() != "location name cannot contain path separators" {
+				t.Error("want: location name cannot contain path separators, got:", err)
+			}
+			return
+		}
+		t.Error("want: FAIL, got:PASS")
+	})
+	t.Run("path-separator-back", func(t *testing.T) {
+		err := validateLocationName("desk\\top")
+		if err != nil {
+			if err.Error() != "location name cannot contain path separators" {
+				t.Error("want: location name cannot contain path separators, got:", err)
+			}
+			return
+		}
+		t.Error("want: FAIL, got: PASS")
+	})
+
+	// test with control characters, expect err
+	t.Run("control-character", func(t *testing.T) {
+		err := validateLocationName("desk\x00top")
+		if err != nil {
+			if err.Error() != "location name cannot contain control characters" {
+				t.Error("want: location name cannot contain control characters, got:", err)
+			}
+			return
+		}
+		t.Error("want: FAIL, got: PASS")
+	})
+}
