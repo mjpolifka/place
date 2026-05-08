@@ -21,8 +21,12 @@ func parseArgsAndRun(args []string) error {
 	if len(args) > 1 {
 		switch args[1] {
 		case "create":
-			err := create(args)
-			if err != nil {
+			if err := create(args); err != nil {
+				return err
+			}
+			return nil
+		case "select":
+			if err := selectLocation(args); err != nil {
 				return err
 			}
 			return nil
@@ -171,4 +175,59 @@ func create(args []string) error {
 	}
 
 	return nil
+}
+
+func selectLocation(args []string) error {
+	if len(args) > 3 {
+		return fmt.Errorf("Too many args for 'select'")
+	}
+	if len(args) < 3 {
+		return fmt.Errorf("Not enough args for 'select'")
+	}
+
+	wd := filepath.Dir(args[0])
+
+	// Validate the input from the user before using it
+	locationName := args[2]
+	if err := validateLocationName(locationName); err != nil {
+		return err
+	}
+
+	// Validate placeFile exists and is valid
+	exist, valid, placeFile, err := validatePlaceFile(wd)
+	if err != nil {
+		return err
+	}
+
+	if !exist {
+		// fmt.Println("Creating empty placeFile A")
+		placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
+	} else if !valid {
+		fmt.Println("Place.json is corrupt. Overwrite? y/N")
+		userInput, err := getUserInput(os.Stdin)
+		if err != nil {
+			return err
+		}
+		if userInput[0] == 'y' || userInput[0] == 'Y' {
+			// fmt.Println("Creating empty placeFile B")
+			placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
+		} else {
+			return nil
+		} // exit
+	}
+	// only 3 ways out of the above block:
+	// 	file exists and is valid,
+	// 	file didn't exist and was created,
+	// 	or file wasn't valid and was overwritten
+	// no matter which path is taken, the file now exists and is valid, or we exited
+
+	// Check if the location exists already
+	fmt.Println(placeFile) // TEMP need to use the variable
+	return nil
+
+	// If it doesn't exist, ask to create it
+
+	// If the user said yes, create it
+
+	// Set the SelectedLocation to the new location and save
 }
