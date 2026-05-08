@@ -141,26 +141,25 @@ func is(args []string) error {
 
 func create(wd string, locationName string) error {
 	// Validate placeFile exists and is valid
-	exist, valid, placeFile, err := validatePlaceFile(wd)
+	placeFile, err := readPlaceFile(wd)
 	if err != nil {
-		return err
-	}
-
-	if !exist {
-		// fmt.Println("Creating empty placeFile A")
-		placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
-	} else if !valid {
-		fmt.Println("Place.json is corrupt. Overwrite? y/N")
-		userInput, err := getUserInput(os.Stdin)
-		if err != nil {
-			return err
-		}
-		if userInput[0] == 'y' || userInput[0] == 'Y' {
-			// fmt.Println("Creating empty placeFile B")
+		if os.IsNotExist(err) {
+			// fmt.Println("Creating empty placeFile A")
 			placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
-		} else {
-			return nil
-		} // exit
+		} else if IsInvalidPlaceFile(err) {
+			fmt.Println("Place.json is corrupt. Overwrite? y/N")
+			userInput, err := getUserInput(os.Stdin)
+			if err != nil {
+				return err
+			}
+			if userInput[0] == 'y' || userInput[0] == 'Y' {
+				// fmt.Println("Creating empty placeFile B")
+				placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
+			} else {
+				return nil
+			} // exit
+		}
+		return err
 	}
 	// only 3 ways out of the above block:
 	// 	file exists and is valid,
@@ -183,26 +182,25 @@ func create(wd string, locationName string) error {
 
 func selectLocation(wd string, locationName string) error {
 	// Validate placeFile exists and is valid
-	exist, valid, placeFile, err := validatePlaceFile(wd)
+	placeFile, err := readPlaceFile(wd)
 	if err != nil {
-		return err
-	}
-
-	if !exist {
-		// fmt.Println("Creating empty placeFile A")
-		placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
-	} else if !valid {
-		fmt.Println("Place.json is corrupt. Overwrite? y/N")
-		userInput, err := getUserInput(os.Stdin)
-		if err != nil {
-			return err
-		}
-		if userInput[0] == 'y' || userInput[0] == 'Y' {
-			// fmt.Println("Creating empty placeFile B")
+		if os.IsNotExist(err) {
+			// fmt.Println("Creating empty placeFile A")
 			placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
-		} else {
-			return nil
-		} // exit
+		} else if IsInvalidPlaceFile(err) {
+			fmt.Println("Place.json is corrupt. Overwrite? y/N")
+			userInput, err := getUserInput(os.Stdin)
+			if err != nil {
+				return err
+			}
+			if userInput[0] == 'y' || userInput[0] == 'Y' {
+				// fmt.Println("Creating empty placeFile B")
+				placeFile = PlaceFile{SelectedLocation: "", Locations: []Location{}}
+			} else {
+				return nil
+			} // exit
+		}
+		return err
 	}
 	// only 3 ways out of the above block:
 	// 	file exists and is valid,

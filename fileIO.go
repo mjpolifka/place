@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -28,33 +29,45 @@ type Place struct {
 	Height int    `json:"height"`
 }
 
-func validatePlaceFile(wd string) (bool, bool, PlaceFile, error) { // exist, valid, placeFile, err
+type InvalidPlaceFileError struct {
+	Err error
+}
+
+func (e *InvalidPlaceFileError) Error() string {
+	return "place file is invalid: " + e.Err.Error()
+}
+
+func (e *InvalidPlaceFileError) Unwrap() error {
+	return e.Err
+}
+
+func IsInvalidPlaceFile(err error) bool {
+	var invalidErr *InvalidPlaceFileError
+	return errors.As(err, &invalidErr)
+}
+
+func readPlaceFile(wd string) (PlaceFile, error) { // exist, valid, placeFile, err
 	filePath := filepath.Join(wd, "place.json")
 
 	// check if json exists
 	fileBytes, err := os.ReadFile(filePath)
 	if err != nil {
-		if os.IsNotExist(err) {
-			// json doesn't exist
-			// fmt.Println("JSON doesn't exist, returning from validatePlaceFile")
-			return false, false, PlaceFile{}, nil
-		}
-		return false, false, PlaceFile{}, err
+		return PlaceFile{}, err
 	}
 	// json does exist
-	// fmt.Println("JSON does exist in validatePlaceFile")
+	// fmt.Println("JSON does exist in readPlaceFile")
 	// fmt.Println("fileBytes:", string(fileBytes))
 
 	// check if json is valid
 	var placeFile PlaceFile
 	if err = json.Unmarshal(fileBytes, &placeFile); err != nil {
 		// json is not valid
-		// fmt.Println("JSON is not valid, returning from validatePlaceFile")
-		return true, false, PlaceFile{}, nil // error == nil because this is how we check valid == false
+		// fmt.Println("JSON is not valid, returning from readPlaceFile")
+		return PlaceFile{}, &InvalidPlaceFileError{Err: err}
 	}
 	//json is valid
-	// fmt.Println("JSON exists and is valid, returning from validatePlaceFile")
-	return true, true, placeFile, nil
+	// fmt.Println("JSON exists and is valid, returning from readPlaceFile")
+	return placeFile, nil
 }
 
 func getUserInput(in io.Reader) (string, error) {
