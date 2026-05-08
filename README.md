@@ -13,13 +13,13 @@ Have a place for every window, and be able to put them in their place
 
 ### First, a basic way to move windows
 
-- `place firefox is` prints the current x, y, width, height of firefox
-- `place firefox 200 10 1200 1300` moves firefox to position x=200, y=10, width=1200, height=1300
+- `place firefox is` prints the current x, y, width, height of firefox :ballot_box_with_check:
+- `place firefox 200 10 1200 1300` moves firefox to position x=200, y=10, width=1200, height=1300 :ballot_box_with_check:
 
 
 ### Then later, a robust way to keep things where they belong
 
-- `place create desktop` creates a new location that can have its own unique window positions
+- `place create desktop` creates a new location that can have its own unique window positions :ballot_box_with_check:
 - `place select desktop` sets the current location
 - `place save firefox` saves the current position of firefox to the currently selected location, for later placing
 - `place firefox` puts firefox into its saved position for the currently selected location
