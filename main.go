@@ -159,19 +159,20 @@ func create(wd string, locationName string) error {
 }
 
 func selectLocation(wd string, locationName string) error {
-	// Validate placeFile exists and is valid
 	placeFile, err := validatePlaceFile(wd)
 	if err != nil {
 		return err
 	}
-	// only 3 ways out of the above block:
-	// 	file exists and is valid,
-	// 	file didn't exist and was created,
-	// 	or file wasn't valid and was overwritten
-	// no matter which path is taken, the file now exists and is valid, or we exited
 
 	// Check if the location exists already
+	exists := false
+	for _, location := range placeFile.Locations {
+		if location.Name == locationName {
+			exists = true
+		}
+	}
 	fmt.Println(placeFile) // TEMP need to use the variable
+	fmt.Println("Exists:", exists)
 	return nil
 
 	// If it doesn't exist, ask to create it
