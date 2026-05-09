@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestValidatePlaceFile(t *testing.T) {
+func TestReadPlaceFile(t *testing.T) {
 	// test file doesn't exist
 	t.Run("file-doesnt-exist", func(t *testing.T) {
 		// change to T.TempDir, then file won't exist
@@ -16,12 +16,11 @@ func TestValidatePlaceFile(t *testing.T) {
 		t.Chdir(tempDir)
 
 		// start test
-		exist, _, _, err := validatePlaceFile(tempDir)
+		_, err := readPlaceFile(tempDir)
 		if err != nil {
-			t.Fatal("want: exist==false | got: ERROR")
-		}
-		if exist {
-			t.Error("want: exist==false | got: exist==true")
+			if !os.IsNotExist(err) {
+				t.Error("want: IsNotExist | got:", err)
+			}
 		}
 	})
 	// test file exists but is invalid
@@ -37,15 +36,11 @@ func TestValidatePlaceFile(t *testing.T) {
 		}
 
 		// start test
-		exist, valid, _, err := validatePlaceFile(tempDir)
+		_, err := readPlaceFile(tempDir)
 		if err != nil {
-			t.Fatal("want: exist==true && valid==false | got:", err)
-		}
-		if !exist {
-			t.Error("want: exist==true && valid==false | got: exist==false")
-		}
-		if valid {
-			t.Error("want: exist==true && valid==false | got: valid==true")
+			if !IsInvalidPlaceFile(err) {
+				t.Error("want: IsInvalidPlaceFile | got:", err)
+			}
 		}
 	})
 	// test file exists and is valid
@@ -65,15 +60,9 @@ func TestValidatePlaceFile(t *testing.T) {
 		}
 
 		// start test
-		exist, valid, _, err := validatePlaceFile(tempDir)
+		_, err = readPlaceFile(tempDir)
 		if err != nil {
-			t.Fatal("want: exist==true && valid==true | got:", err)
-		}
-		if !exist {
-			t.Error("want: exist==true && valid==true | got: exist==false")
-		}
-		if !valid {
-			t.Error("want: exist==true && valid==true | got: valid==false")
+			t.Error("want: PASS | got:", err)
 		}
 	})
 }
