@@ -224,11 +224,21 @@ func save(wd string, processName string) error {
 	if err != nil {
 		return err
 	}
-	_, exists := placeFile.LocationMap()[placeFile.SelectedLocation]
+	locationIndex, exists := placeFile.LocationMap()[placeFile.SelectedLocation]
 	if !exists {
 		return fmt.Errorf("selected location does not exist! quitting.")
 	}
+	placeIndex, exists := placeFile.Locations[locationIndex].PlaceMap()[normalizedProcessName]
+	if !exists {
+		return fmt.Errorf("have not yet implemented 'place doesnt exist'")
+		// create a new Place object and fill in the deets
+		// append it to the right place
+	}
+	// edit the existing matching Place object with the deets
 
+	// then save
+
+	fmt.Println(placeIndex)
 	fmt.Println(dimensions["width"])
 	return nil
 }

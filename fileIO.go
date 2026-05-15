@@ -49,6 +49,14 @@ func (placeFile PlaceFile) LocationMap() map[string]int {
 	return locMap
 }
 
+func (location Location) PlaceMap() map[string]int {
+	placeMap := map[string]int{}
+	for i, place := range location.Places {
+		placeMap[place.Name] = i
+	}
+	return placeMap
+}
+
 func IsInvalidPlaceFile(err error) bool {
 	var invalidErr *InvalidPlaceFileError
 	return errors.As(err, &invalidErr)
