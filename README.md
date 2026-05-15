@@ -22,7 +22,7 @@ Have a place for every window, and be able to put them in their place
 - `place create desktop` creates a new location that can have its own unique window positions :ballot_box_with_check:
 - `place select desktop` sets the current location :ballot_box_with_check:
 - `place save firefox` saves the current position of firefox to the currently selected location, for later placing :ballot_box_with_check:
-- `place firefox` puts firefox into its saved position for the currently selected location
+- `place firefox` puts firefox into its saved position for the currently selected location :ballot_box_with_check:
 - `place all` puts all windows which have a saved position within the currently selected location into their place
 - `place list locations` list all saved locations
 - `place list positions` list all saved window positions for the current location
