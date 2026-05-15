@@ -323,6 +323,5 @@ func all(wd string) error {
 		}
 	}
 
-	fmt.Println("TODO: implement 'all'")
 	return nil
 }
