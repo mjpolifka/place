@@ -49,6 +49,18 @@ func parseArgsAndRun(args []string) error {
 				return err
 			}
 			return nil
+		case "save":
+			if len(args) > 3 {
+				return fmt.Errorf("Too many args for 'save'")
+			}
+			if len(args) < 3 {
+				return fmt.Errorf("Not enough args for 'save'")
+			}
+			processName := args[2]
+			if err := save(processName); err != nil {
+				return err
+			}
+			return nil
 		default:
 			if len(args) > 2 {
 				if args[2] == "is" {
@@ -160,6 +172,7 @@ func create(wd string, locationName string) error {
 	return nil
 }
 
+// "select" is a reserved word, hence the strange name
 func selectLocation(wd string, locationName string) error {
 	placeFile, err := validatePlaceFile(wd)
 	if err != nil {
@@ -194,5 +207,14 @@ func selectLocation(wd string, locationName string) error {
 	placeFile.SelectedLocation = locationName
 	savePlaceFile(wd, placeFile)
 	fmt.Printf("%s selected\n", locationName)
+	return nil
+}
+
+func save(processName string) error {
+	normalizedProcessName, err := normalizeProcessName(processName)
+	if err != nil {
+		return err
+	}
+	fmt.Println(normalizedProcessName)
 	return nil
 }
