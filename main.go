@@ -312,7 +312,15 @@ func all(wd string) error {
 	}
 
 	for _, place := range placeFile.Locations[locationIndex].Places {
-		fmt.Println("place:", place.Name)
+		if err := moveWindow(
+			place.Name,
+			place.X,
+			place.Y,
+			place.Width,
+			place.Height,
+		); err != nil {
+			return err
+		}
 	}
 
 	fmt.Println("TODO: implement 'all'")
