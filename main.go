@@ -57,7 +57,7 @@ func parseArgsAndRun(args []string) error {
 				return fmt.Errorf("Not enough args for 'save'")
 			}
 			processName := args[2]
-			if err := save(processName); err != nil {
+			if err := save(wd, processName); err != nil {
 				return err
 			}
 			return nil
@@ -210,11 +210,18 @@ func selectLocation(wd string, locationName string) error {
 	return nil
 }
 
-func save(processName string) error {
+func save(wd string, processName string) error {
+	placeFile, err := readPlaceFile(wd)
+	if err != nil {
+		return err
+	}
+
 	normalizedProcessName, err := normalizeProcessName(processName)
 	if err != nil {
 		return err
 	}
+
+	fmt.Println(placeFile.SelectedLocation)
 	fmt.Println(normalizedProcessName)
 	return nil
 }
