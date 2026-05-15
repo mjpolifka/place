@@ -306,7 +306,11 @@ func all(wd string) error {
 	if err != nil {
 		return err
 	}
+	locationIndex, exists := placeFile.LocationMap()[placeFile.SelectedLocation]
+	if !exists {
+		return fmt.Errorf("selected location does not exist in place file: %s", placeFile.SelectedLocation)
+	}
 
-	fmt.Println("TODO: implement 'all'", placeFile.SelectedLocation)
+	fmt.Println("TODO: implement 'all'", locationIndex)
 	return nil
 }
