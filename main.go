@@ -311,6 +311,10 @@ func all(wd string) error {
 		return fmt.Errorf("selected location does not exist in place file: %s", placeFile.SelectedLocation)
 	}
 
-	fmt.Println("TODO: implement 'all'", locationIndex)
+	for _, place := range placeFile.Locations[locationIndex].Places {
+		fmt.Println("place:", place.Name)
+	}
+
+	fmt.Println("TODO: implement 'all'")
 	return nil
 }
