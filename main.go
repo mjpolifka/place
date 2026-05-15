@@ -49,6 +49,18 @@ func parseArgsAndRun(args []string) error {
 				return err
 			}
 			return nil
+		case "save":
+			if len(args) > 3 {
+				return fmt.Errorf("Too many args for 'save'")
+			}
+			if len(args) < 3 {
+				return fmt.Errorf("Not enough args for 'save'")
+			}
+			processName := args[2]
+			if err := save(wd, processName); err != nil {
+				return err
+			}
+			return nil
 		default:
 			if len(args) > 2 {
 				if args[2] == "is" {
@@ -160,6 +172,7 @@ func create(wd string, locationName string) error {
 	return nil
 }
 
+// "select" is a reserved word, hence the strange name
 func selectLocation(wd string, locationName string) error {
 	placeFile, err := validatePlaceFile(wd)
 	if err != nil {
@@ -194,5 +207,52 @@ func selectLocation(wd string, locationName string) error {
 	placeFile.SelectedLocation = locationName
 	savePlaceFile(wd, placeFile)
 	fmt.Printf("%s selected\n", locationName)
+	return nil
+}
+
+func save(wd string, processName string) error {
+	normalizedProcessName, err := normalizeProcessName(processName)
+	if err != nil {
+		return err
+	}
+	dimensions, err := getWindowDimensions(normalizedProcessName)
+	if err != nil {
+		return err
+	}
+
+	placeFile, err := readPlaceFile(wd)
+	if err != nil {
+		return err
+	}
+	locationIndex, exists := placeFile.LocationMap()[placeFile.SelectedLocation]
+	if !exists {
+		return fmt.Errorf("selected location does not exist! quitting.")
+	}
+	placeIndex, exists := placeFile.Locations[locationIndex].PlaceMap()[normalizedProcessName]
+	if !exists {
+		// create a new Place object and fill in the deets
+		place := Place{
+			Name:   normalizedProcessName,
+			X:      int(dimensions["x"]),
+			Y:      int(dimensions["y"]),
+			Width:  int(dimensions["width"]),
+			Height: int(dimensions["height"]),
+		}
+		// append it to the right place
+		placeFile.Locations[locationIndex].Places = append(placeFile.Locations[locationIndex].Places, place)
+	} else {
+		// edit the existing matching Place object with the deets
+		placeFile.Locations[locationIndex].Places[placeIndex] = Place{
+			Name:   normalizedProcessName,
+			X:      int(dimensions["x"]),
+			Y:      int(dimensions["y"]),
+			Width:  int(dimensions["width"]),
+			Height: int(dimensions["height"]),
+		}
+	}
+
+	// then save
+	savePlaceFile(wd, placeFile)
+	fmt.Printf("saved new place for %s\n", normalizedProcessName)
 	return nil
 }
