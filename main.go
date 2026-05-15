@@ -61,6 +61,14 @@ func parseArgsAndRun(args []string) error {
 				return err
 			}
 			return nil
+		case "all":
+			if len(args) > 2 {
+				return fmt.Errorf("too many arguments for 'all'.  example: place all")
+			}
+			if err := all(); err != nil {
+				return err
+			}
+			return nil
 		default:
 			if len(args) > 2 {
 				if args[2] == "is" {
@@ -70,6 +78,7 @@ func parseArgsAndRun(args []string) error {
 					}
 					return nil
 				}
+				return fmt.Errorf("second argument not recognized: %s", args[2])
 			}
 			if len(args) == 2 {
 				if err := defaultMove(wd, args[1]); err != nil {
@@ -289,5 +298,10 @@ func save(wd string, processName string) error {
 	// then save
 	savePlaceFile(wd, placeFile)
 	fmt.Printf("saved new place for %s\n", normalizedProcessName)
+	return nil
+}
+
+func all() error {
+	fmt.Println("TODO: implement 'all'")
 	return nil
 }
