@@ -65,7 +65,7 @@ func parseArgsAndRun(args []string) error {
 			if len(args) > 2 {
 				return fmt.Errorf("too many arguments for 'all'.  example: place all")
 			}
-			if err := all(); err != nil {
+			if err := all(wd); err != nil {
 				return err
 			}
 			return nil
@@ -301,7 +301,12 @@ func save(wd string, processName string) error {
 	return nil
 }
 
-func all() error {
-	fmt.Println("TODO: implement 'all'")
+func all(wd string) error {
+	placeFile, err := readPlaceFile(wd)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("TODO: implement 'all'", placeFile.SelectedLocation)
 	return nil
 }
