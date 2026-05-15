@@ -211,17 +211,21 @@ func selectLocation(wd string, locationName string) error {
 }
 
 func save(wd string, processName string) error {
+	normalizedProcessName, err := normalizeProcessName(processName)
+	if err != nil {
+		return err
+	}
+	dimensions, err := getWindowDimensions(normalizedProcessName)
+	if err != nil {
+		return err
+	}
+
 	placeFile, err := readPlaceFile(wd)
 	if err != nil {
 		return err
 	}
 
-	normalizedProcessName, err := normalizeProcessName(processName)
-	if err != nil {
-		return err
-	}
-
+	fmt.Println(dimensions["width"])
 	fmt.Println(placeFile.SelectedLocation)
-	fmt.Println(normalizedProcessName)
 	return nil
 }
