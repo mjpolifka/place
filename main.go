@@ -78,7 +78,10 @@ func parseArgsAndRun(args []string) error {
 					}
 					return nil
 				}
-				return fmt.Errorf("second argument not recognized: %s", args[2])
+				if err := move(args); err != nil {
+					return err
+				}
+				return nil
 			}
 			if len(args) == 2 {
 				if err := defaultMove(wd, args[1]); err != nil {
@@ -86,10 +89,7 @@ func parseArgsAndRun(args []string) error {
 				}
 				return nil
 			}
-			if err := move(args); err != nil {
-				return err
-			}
-			return nil
+			return fmt.Errorf("could not parse arguments.  see readme.")
 		}
 	} else {
 		return fmt.Errorf("Not enough arguments, show help")
