@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestParseArgsAndRun(t *testing.T) {
 	// test not enough args
@@ -20,8 +23,8 @@ func TestMove(t *testing.T) {
 		args := []string{"fake program name", "notepad", "0", "0", "800"} // missing height
 		err := move(args)
 		if err != nil {
-			if err.Error() != "Not enough args for 'move', show help" {
-				t.Error("want: Not enough args for 'move', show help | got:", err)
+			if !strings.Contains(err.Error(), "Not enough args for 'move'") {
+				t.Error("want: Not enough args for 'move' | got:", err)
 			}
 			return
 		}

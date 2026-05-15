@@ -61,6 +61,14 @@ func parseArgsAndRun(args []string) error {
 				return err
 			}
 			return nil
+		case "all":
+			if len(args) > 2 {
+				return fmt.Errorf("too many arguments for 'all'.  example: place all")
+			}
+			if err := all(wd); err != nil {
+				return err
+			}
+			return nil
 		default:
 			if len(args) > 2 {
 				if args[2] == "is" {
@@ -70,6 +78,10 @@ func parseArgsAndRun(args []string) error {
 					}
 					return nil
 				}
+				if err := move(args); err != nil {
+					return err
+				}
+				return nil
 			}
 			if len(args) == 2 {
 				if err := defaultMove(wd, args[1]); err != nil {
@@ -77,10 +89,7 @@ func parseArgsAndRun(args []string) error {
 				}
 				return nil
 			}
-			if err := move(args); err != nil {
-				return err
-			}
-			return nil
+			return fmt.Errorf("could not parse arguments.  see readme.")
 		}
 	} else {
 		return fmt.Errorf("Not enough arguments, show help")
@@ -289,5 +298,30 @@ func save(wd string, processName string) error {
 	// then save
 	savePlaceFile(wd, placeFile)
 	fmt.Printf("saved new place for %s\n", normalizedProcessName)
+	return nil
+}
+
+func all(wd string) error {
+	placeFile, err := readPlaceFile(wd)
+	if err != nil {
+		return err
+	}
+	locationIndex, exists := placeFile.LocationMap()[placeFile.SelectedLocation]
+	if !exists {
+		return fmt.Errorf("selected location does not exist in place file: %s", placeFile.SelectedLocation)
+	}
+
+	for _, place := range placeFile.Locations[locationIndex].Places {
+		if err := moveWindow(
+			place.Name,
+			place.X,
+			place.Y,
+			place.Width,
+			place.Height,
+		); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
