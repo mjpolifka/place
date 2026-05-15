@@ -230,15 +230,29 @@ func save(wd string, processName string) error {
 	}
 	placeIndex, exists := placeFile.Locations[locationIndex].PlaceMap()[normalizedProcessName]
 	if !exists {
-		return fmt.Errorf("have not yet implemented 'place doesnt exist'")
 		// create a new Place object and fill in the deets
+		place := Place{
+			Name:   normalizedProcessName,
+			X:      int(dimensions["x"]),
+			Y:      int(dimensions["y"]),
+			Width:  int(dimensions["width"]),
+			Height: int(dimensions["height"]),
+		}
 		// append it to the right place
+		placeFile.Locations[locationIndex].Places = append(placeFile.Locations[locationIndex].Places, place)
+	} else {
+		// edit the existing matching Place object with the deets
+		placeFile.Locations[locationIndex].Places[placeIndex] = Place{
+			Name:   normalizedProcessName,
+			X:      int(dimensions["x"]),
+			Y:      int(dimensions["y"]),
+			Width:  int(dimensions["width"]),
+			Height: int(dimensions["height"]),
+		}
 	}
-	// edit the existing matching Place object with the deets
 
 	// then save
-
-	fmt.Println(placeIndex)
-	fmt.Println(dimensions["width"])
+	savePlaceFile(wd, placeFile)
+	fmt.Printf("saved new place for %s\n", normalizedProcessName)
 	return nil
 }
