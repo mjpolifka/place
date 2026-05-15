@@ -160,7 +160,16 @@ func defaultMove(wd string, processName string) error {
 	if !exists {
 		return fmt.Errorf("no saved place for %s.  quitting.", normalizedProcessName)
 	}
-	fmt.Println("selected place:", placeFile.Locations[locationIndex].Places[placeIndex])
+	selectedPlace := placeFile.Locations[locationIndex].Places[placeIndex]
+	if err := moveWindow(
+		selectedPlace.Name,
+		selectedPlace.X,
+		selectedPlace.Y,
+		selectedPlace.Width,
+		selectedPlace.Height,
+	); err != nil {
+		return err
+	}
 	return nil
 }
 
