@@ -71,8 +71,13 @@ func parseArgsAndRun(args []string) error {
 					return nil
 				}
 			}
-			err := move(args)
-			if err != nil {
+			if len(args) == 2 {
+				if err := defaultMove(wd, args[1]); err != nil {
+					return err
+				}
+				return nil
+			}
+			if err := move(args); err != nil {
 				return err
 			}
 			return nil
@@ -84,7 +89,7 @@ func parseArgsAndRun(args []string) error {
 
 func move(args []string) error {
 	if len(args) < 6 {
-		return fmt.Errorf("Not enough args for 'move', show help")
+		return fmt.Errorf("Not enough args for 'move'.  Example: place firefox 0 0 1920 1080")
 	}
 
 	// Process Name
@@ -135,6 +140,36 @@ func move(args []string) error {
 		return err
 	}
 
+	return nil
+}
+
+func defaultMove(wd string, processName string) error {
+	normalizedProcessName, err := normalizeProcessName(processName)
+	if err != nil {
+		return err
+	}
+	placeFile, err := readPlaceFile(wd)
+	if err != nil {
+		return err
+	}
+	locationIndex, exists := placeFile.LocationMap()[placeFile.SelectedLocation]
+	if !exists {
+		return fmt.Errorf("currently selected location does not exist in place file: %s.  quitting.", placeFile.SelectedLocation)
+	}
+	placeIndex, exists := placeFile.Locations[locationIndex].PlaceMap()[normalizedProcessName]
+	if !exists {
+		return fmt.Errorf("no saved place for %s.  quitting.", normalizedProcessName)
+	}
+	selectedPlace := placeFile.Locations[locationIndex].Places[placeIndex]
+	if err := moveWindow(
+		selectedPlace.Name,
+		selectedPlace.X,
+		selectedPlace.Y,
+		selectedPlace.Width,
+		selectedPlace.Height,
+	); err != nil {
+		return err
+	}
 	return nil
 }
 
