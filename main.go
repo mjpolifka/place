@@ -224,8 +224,11 @@ func save(wd string, processName string) error {
 	if err != nil {
 		return err
 	}
+	_, exists := placeFile.LocationMap()[placeFile.SelectedLocation]
+	if !exists {
+		return fmt.Errorf("selected location does not exist! quitting.")
+	}
 
 	fmt.Println(dimensions["width"])
-	fmt.Println(placeFile.SelectedLocation)
 	return nil
 }

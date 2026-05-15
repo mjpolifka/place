@@ -41,6 +41,14 @@ func (e *InvalidPlaceFileError) Unwrap() error {
 	return e.Err
 }
 
+func (placeFile PlaceFile) LocationMap() map[string]int {
+	locMap := map[string]int{}
+	for i, location := range placeFile.Locations {
+		locMap[location.Name] = i
+	}
+	return locMap
+}
+
 func IsInvalidPlaceFile(err error) bool {
 	var invalidErr *InvalidPlaceFileError
 	return errors.As(err, &invalidErr)
